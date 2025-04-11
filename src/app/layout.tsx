@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { Lato, Quicksand } from "next/font/google";
 import "./globals.css";
+import Providers from "@/providers/providers";
 
 const lato = Lato({
   subsets: ['latin'],
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body
         className={`w-screen h-screen font-lato antialiased`}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
