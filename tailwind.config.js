@@ -1,16 +1,21 @@
-import { Colors } from './src/utils/Colors';
-
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    ".src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+
+
   ],
   theme: {
     extend: {
+      fontFamily:{
+        lato: ['var(--font-lato)'],
+        quicksand: ['var(--font-quicksand)']
+      },
       colors: {
-        themeColor:Colors.themeColor,
-        tertiary:Colors.tertiary,
+        themeColor: '#109E15',
+        tertiary: '#F9F8F6',
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -30,16 +35,14 @@ module.exports = {
           'border-radius': '10px',
         },
         '.custom-scrollbar::-webkit-scrollbar-thumb': {
-          background: Colors.themeColor,
+          background: '#109E15',
           'border-radius': '10px',
         },
         '.custom-scrollbar::-webkit-scrollbar-thumb:hover': {
-          background: Colors.themeColor,
+          background: '#109E15',
 
         },
       }, ['responsive', 'hover']);
     },
   ],
 };
-
-export default config;
