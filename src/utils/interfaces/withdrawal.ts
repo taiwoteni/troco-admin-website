@@ -63,7 +63,7 @@ export class Withdrawal {
   
     get creatorImage(): string | undefined{
       const src = this.data.user.userImage.trim();
-      return src.length === 0? null:src;
+      return src.length === 0? undefined:src;
 
     }
   
