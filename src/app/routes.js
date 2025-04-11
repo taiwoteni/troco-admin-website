@@ -1,4 +1,4 @@
-const routes = {
+const Routes = {
 auth:{
     path:"/auth/",
     login:{
@@ -49,4 +49,4 @@ dashboard:{
 }
 }
 
-export default routes;
+export default Routes;
