@@ -45,7 +45,7 @@ export class SalesItem{
     }
 
     get name(): string {
-        return this.salesItem.name ?? this.salesItem.productName ?? this.salesItem.serviceName ?? this.salesItem.virtualName;
+        return this.salesItem.name ?? this.salesItem.productName ?? this.salesItem.serviceName ?? this.salesItem.virtualName!;
     }
 
     get escrowFee(): number{
@@ -72,7 +72,7 @@ export class SalesItem{
     }
 
     get requirement(): string{
-        return this.salesItem.serviceRequirement ?? this.salesItem.virtualRequirement;
+        return this.salesItem.serviceRequirement ?? this.salesItem.virtualRequirement!;
     }
 
     get totalPrice(): number{
@@ -104,7 +104,7 @@ export class SalesItem{
     }
     
     get status(): TaskStatus | undefined {
-        switch(this.salesItem.taskStatus.toLowerCase().trim()){
+        switch(this.salesItem.taskStatus?.toLowerCase().trim()){
             case 'submitted':
                 return TaskStatus.Submitted;
             case 'accepted':
@@ -129,7 +129,7 @@ export class SalesItem{
     }
     
     get deadline(): Date{
-        return new Date(this.salesItem.deadlineTime || null);
+        return this.salesItem.deadlineTime? new Date(this.salesItem.deadlineTime) : new Date();
     }
 
     get buyerPaidProof(): string | undefined {

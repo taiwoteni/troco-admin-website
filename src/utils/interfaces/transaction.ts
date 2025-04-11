@@ -1,7 +1,7 @@
 import { accountDetail } from "./account-detail";
 import { driver } from "./driver";
-import { report, reportDetail, reportHolder } from "./report";
-import { SalesItem, salesitem, TaskStatus } from "./sales-item";
+import { reportDetail,} from "./report";
+import { SalesItem, salesitem } from "./sales-item";
 
 
 export interface transaction{
@@ -45,10 +45,6 @@ export enum TransactionStatus {
   Finalizing="Finalizing",
   Completed="Completed",
   Cancelled="Cancelled",
-}
-
-const parseTransactionType = (value:string): TransactionType =>{
-  return TransactionType[value as keyof typeof TransactionType];
 }
 
 const parseTransactionStatus = (value:string): TransactionStatus =>{
@@ -113,7 +109,7 @@ export default class Transaction {
 
     get paymentReceipt():string{
       if(this.transactionType !== TransactionType.Product){
-        return this.currentTask.buyerPaidProof
+        return this.currentTask.buyerPaidProof!
       }
       return this.data.paymentReceipt;
     }
@@ -180,17 +176,17 @@ export default class Transaction {
     }
 
     get returnedItems(): SalesItem[]{
-      if(this.data.returnedItems.length === 0){
+      if((this.data.returnedItems ?? []).length === 0){
         return [];
       }
-      const list = [...(this.data.returnedItems?.findLast((v)=> true)["products"] ?? [])]
+      const list = [...(this.data.returnedItems?.findLast(()=> true)!["products"] ?? [])]
 
-      return list.map((e)=> this.pricings.find((val)=> val.id === e));
+      return list.map((e)=> this.pricings.find((val)=> val.id === e)!);
     }
 
     get returnedReason(): string{
-      const reason = (this.data.returnedItems?.findLast((v)=> true)["comments"]);
-      return reason;
+      const reason = (this.data.returnedItems?.findLast(()=> true)!["comments"]);
+      return reason!;
     }
 
     get totalPriceReturned(): number{
@@ -231,7 +227,7 @@ export default class Transaction {
     }
 
     get driver(): driver{
-      return this.data.driverInformation.findLast(()=>true)
+      return this.data.driverInformation.findLast(()=>true)!
     }
 
     get driverApproved(): boolean{
@@ -244,7 +240,7 @@ export default class Transaction {
     }
 
     get returnDriver():driver{
-      return this.data.driverInformation.findLast((value)=> true);
+      return this.data.driverInformation.findLast(()=> true)!;
     }
 
     get hasReturnDriver(): boolean{
@@ -270,7 +266,7 @@ export default class Transaction {
       const target = this.pricings.find((value)=>{
         return !value.tasksUploaded || !value.paymentMade  || !value.paymentApproved || !value.clientSatisfied || !value.paymentReleased;
       });
-      return target?target:this.pricings.findLast(()=>true);
+      return target?target:this.pricings.findLast(()=>true)!;
     }
 
     get currentTaskPosition(): number{

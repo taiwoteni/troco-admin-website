@@ -1,5 +1,5 @@
-import { Group } from "../../components/groups/GroupItemLayout";
-import { isAfter, isBefore } from "../DateUtils";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Group } from "./group";
 import { reportHolder } from "./report";
 import Transaction, { transaction } from "./transaction";
 
@@ -188,7 +188,7 @@ export class User {
         return Array.from(new Set(this.data.transactions.map(e => (e as string))))
       }
 
-      this.transactions.map(e => e.id);
+      return this.transactions.map(e => e.id);
 
     }
 
