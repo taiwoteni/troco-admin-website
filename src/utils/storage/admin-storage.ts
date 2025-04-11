@@ -1,10 +1,15 @@
 import Admin from "../interfaces/admin";
 
 export function saveAdminDetails(data:Admin){
-    localStorage.setItem('admindetails', JSON.stringify(data))
+    if(typeof window !== 'undefined'){
+        localStorage.setItem('admindetails', JSON.stringify(data))
+    }
 }
 
 export function getAdminDetails(): Admin | undefined{
+    if(typeof window === 'undefined'){
+        return undefined;
+    }
 
     const rawData = localStorage.getItem('admindetails');
     if(!rawData){
