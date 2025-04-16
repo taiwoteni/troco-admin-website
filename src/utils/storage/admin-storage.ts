@@ -1,7 +1,11 @@
 import Admin from "../interfaces/admin";
 
-export function saveAdminDetails(data:Admin){
+export function saveAdminDetails(data?:Admin){
     if(typeof window !== 'undefined'){
+        if(!data){
+            localStorage.removeItem('admindetails');
+            return;
+        }
         localStorage.setItem('admindetails', JSON.stringify(data))
     }
 }

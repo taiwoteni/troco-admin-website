@@ -14,5 +14,5 @@ export const apiGateway = axios.create({
 export const errorApiGateway = axios.create({
     baseURL:baseUrl,
     headers,
-    validateStatus: ()=> false
+    validateStatus: (status)=> status>=200 && status <=299
 })

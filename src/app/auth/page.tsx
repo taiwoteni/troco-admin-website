@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
 import Routes from '../routes';
 
+// This page just automatically redirects to the register page
 export default function AuthPage() {
     const router = useRouter();
     useEffect(()=>{
@@ -13,6 +14,6 @@ export default function AuthPage() {
         return ()=>clearTimeout(t);
     }, [router])
   return (
-    <div>AuthPage</div>
+    <div className='w-full h-full bg-themeColor'>AuthPage</div>
   )
 }

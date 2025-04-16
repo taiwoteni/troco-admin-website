@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { Lato, Quicksand } from "next/font/google";
 import "./globals.css";
+import {Toaster} from 'sonner'
 import Providers from "@/providers/providers";
 
 const lato = Lato({
@@ -27,14 +28,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body
         className={`w-screen h-screen font-lato antialiased`}
       >
-        <Providers>
-          {children}
-        </Providers>
+        <Toaster richColors expand={true} closeButton position="top-right" />
+          <Providers>
+            {children}
+          </Providers>
+
       </body>
     </html>
   );

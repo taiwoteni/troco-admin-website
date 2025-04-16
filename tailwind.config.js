@@ -16,6 +16,7 @@ module.exports = {
       colors: {
         themeColor: '#109E15',
         tertiary: '#F9F8F6',
+        secondary: '#000000a6'
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -25,6 +26,13 @@ module.exports = {
     },
   },
   plugins: [
+    function ({ addComponents }) {
+      addComponents({
+        '.ease': {// Default color
+          transitionTimingFunction:'ease',
+        },
+      });
+    },
     function ({ addUtilities }) {
       addUtilities({
         '.custom-scrollbar::-webkit-scrollbar': {
@@ -41,6 +49,16 @@ module.exports = {
         '.custom-scrollbar::-webkit-scrollbar-thumb:hover': {
           background: '#109E15',
 
+        },
+        '.flex-center':{
+          'justify-content':'center',
+          'align-items':'center',
+        },
+        '.allow-discrete':{
+          'transition-behaviour':'allow-discrete'
+        },
+        '.normal-behaviour':{
+          'transition-behaviour':'normal'
         },
       }, ['responsive', 'hover']);
     },
