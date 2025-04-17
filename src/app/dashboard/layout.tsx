@@ -3,7 +3,7 @@
 import { useAdmin } from '@/providers/AdminProvider';
 import { usePathname, useRouter } from 'next/navigation';
 import {HambergerMenu} from 'iconsax-react'
-import Lottie from 'lottie-react'
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import React, { ReactNode, useState } from 'react'
 import Routes from '../routes';
 import errorAnim from '../../../public/lottie/error.json'
@@ -11,6 +11,7 @@ import Image from 'next/image';
 import Navbar from '@/components/navbar/NavBar';
 import { SideBarArray } from '@/utils/data/SideBarData';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 export default function DashboardLayout({children}:{children?: ReactNode}) {
     const [expand, expandDrawer] = useState<boolean>(true);

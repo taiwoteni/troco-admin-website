@@ -1,9 +1,10 @@
 "use client"
 
-import Lottie from 'lottie-react'
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import React from 'react'
 import errorAnim from '../../public/lottie/error.json'
 import { usePathname, useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic';
 
 
 export default function NotFound() {

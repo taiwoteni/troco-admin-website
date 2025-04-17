@@ -1,5 +1,6 @@
+import dynamic from 'next/dynamic';
 import React from 'react'
-import Lottie from 'lottie-react'
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 interface props{
     lottieAnimation:unknown,
