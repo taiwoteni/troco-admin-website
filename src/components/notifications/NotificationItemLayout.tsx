@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image";
 import { Colors } from "../../utils/Colors";
 import Notification from "../../utils/interfaces/Notification";

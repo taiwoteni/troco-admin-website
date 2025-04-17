@@ -10,7 +10,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Routes from '@/app/routes';
 import { getOneTransactionOrError } from '@/services/rest-api/transaction-api';
-import Lottie from 'lottie-react';
+import dynamic from 'next/dynamic';
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+
+
 interface props{
     onCancel:()=>void,
 }
