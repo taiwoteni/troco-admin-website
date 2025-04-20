@@ -8,7 +8,11 @@ import errorAnim from '../../../public/lottie/error.json'
 import Navbar from '@/components/navbar/NavBar';
 import dynamic from 'next/dynamic';
 import SideBar from '@/components/sidebar/Sidebar';
+import { registerChartModules } from '@/lib/chartjs.config';
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+
+// To register Chart Features for all components and pages used within the dashboard
+registerChartModules();
 
 
 export default function DashboardLayout({children}:{children?: ReactNode}) {
@@ -31,8 +35,10 @@ export default function DashboardLayout({children}:{children?: ReactNode}) {
         <SideBar />
         <div className='flex flex-1 h-screen flex-col overflow-hidden'>
             <Navbar />
-            <div className='w-full flex flex-1'>
-                {children}
+            <div className='w-full flex flex-1 overflow-hidden'>
+                <div className='w-full h-full'>
+                  {children}
+                </div>
             </div>
         </div>
         

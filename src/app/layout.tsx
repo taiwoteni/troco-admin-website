@@ -7,14 +7,14 @@ import Providers from "@/providers/providers";
 
 const lato = Lato({
   subsets: ['latin'],
-  weight: ['300', '400', '700'],
+  weight: ['100','300', '400', '700', '900'],
   variable: '--font-lato'
 });
 
 // Load Quicksand font with different weights (e.g., 300, 400, 700)
 const quicksand = Quicksand({
   subsets: ['latin'],
-  weight: ['300', '400', '700'],
+  weight: ['300', '400', '500', '600', '700',],
   variable: '--font-quicksand'
 });
 

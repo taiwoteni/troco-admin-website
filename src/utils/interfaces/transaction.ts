@@ -11,17 +11,17 @@ export interface transaction{
     address?:string,
     aboutService:string,
     DateOfWork:string,
-    reports?:reportDetail[],
+    reports?:string[],
     createdTime:string,
     updatedAt:string,
     inspectionDays:number,
     inspectionPeriod:string,
     typeOftransaction:string,
     status:string,
-    pricing:salesitem[],
-    driverInformation:driver[],
+    pricing:string[],
+    driverInformation:string[],
     paymentReceipt:string,
-    returnedItems?:[],
+    returnedItems?: string[],
     previousStatus?:string,
     groupName:string,
     totalTransactionAmount?:number,
@@ -30,9 +30,40 @@ export interface transaction{
     creatorImage:string,
     creator:string,
     buyer:string,
-    accountDetailes:accountDetail[],
+    accountDetailes:string[],
     paymentMade:boolean,
     buyerSatisfied:boolean,
+}
+
+export interface fullTransaction{
+  _id:string,
+  transactionName:string,
+  location?:string,
+  address?:string,
+  aboutService:string,
+  DateOfWork:string,
+  reports?:reportDetail[],
+  createdTime:string,
+  updatedAt:string,
+  inspectionDays:number,
+  inspectionPeriod:string,
+  typeOftransaction:string,
+  status:string,
+  pricing:salesitem[],
+  driverInformation:driver[],
+  paymentReceipt:string,
+  returnedItems?:[],
+  previousStatus?:string,
+  groupName:string,
+  totalTransactionAmount?:number,
+  adminPaymentApproved:boolean,
+  creatorName:string,
+  creatorImage:string,
+  creator:string,
+  buyer:string,
+  accountDetailes:accountDetail[],
+  paymentMade:boolean,
+  buyerSatisfied:boolean,
 }
 
 export enum TransactionType { Product="Product", Virtual="Virtual", Service="Service"}
@@ -59,13 +90,13 @@ const parseTransactionStatus = (value:string): TransactionStatus =>{
 }
 
 export default class Transaction {
-    private data: transaction;
+    private data: fullTransaction;
 
-    constructor(data: transaction) {
+    constructor(data: fullTransaction) {
       this.data = data;
     }
 
-    get rawData(): transaction{
+    get rawData(): fullTransaction{
         return this.data;
     }
     

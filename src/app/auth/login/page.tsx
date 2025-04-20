@@ -24,7 +24,8 @@ export default function LoginPage() {
         toast.dismiss('login');
         return promise.data;
       },
-      onError: ()=>{
+      onError: (error)=>{
+        console.error(error)
         toast.dismiss('login');
         toast.error("Sign-in failed", {description: "Either account does not exist or you should try again later"});
       },

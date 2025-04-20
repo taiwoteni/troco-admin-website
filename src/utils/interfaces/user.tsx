@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Group } from "./group";
 import { reportHolder } from "./report";
-import Transaction, { transaction } from "./transaction";
+import Transaction, { fullTransaction, } from "./transaction";
+
+export type AccountType = "company" | "business" | "merchant" | "personal"
 
 export interface user{
     _id:string,
@@ -14,7 +16,7 @@ export interface user{
     phoneNumber:string,
     refferal?:any,
     BusinessName:string,
-    accountType?:string,
+    accountType?: AccountType,
     kycDocuments?:any,
     address:string,
     lastSeen:string,
@@ -26,7 +28,7 @@ export interface user{
     kycTier:number,
     wallet:number,
     groups:Group[] | string[],
-    transactions:transaction[] | string[],
+    transactions:fullTransaction[] | string[],
     createdAt?:string,
     blocked:boolean
 } 
@@ -46,11 +48,11 @@ export class User {
     }
 
     get firstName(): string{
-        return this.data.firstName;
+        return this.data.firstName ?? "No";
     }
 
     get lastName(): string{
-        return this.data.lastName;
+        return this.data.lastName ?? "Name";
     }
   
     // Getter for full name
@@ -174,7 +176,7 @@ export class User {
       
       if(isDetailedArray){
         return Array.from(
-          new Map(this.data.transactions.map(e => (e as transaction)).map(target => [target._id,new Transaction(target)])).values()
+          new Map(this.data.transactions.map(e => (e as fullTransaction)).map(target => [target._id,new Transaction(target)])).values()
         );
       }
 

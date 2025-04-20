@@ -2,7 +2,7 @@ import { transaction } from "../interfaces/transaction";
 
 export function saveTransactions(transactions: transaction[]){
     if(typeof window !== 'undefined'){
-        localStorage.setItem('admindetails', JSON.stringify(transactions))
+        localStorage.setItem('transactions', JSON.stringify(transactions))
     }
 }
 
