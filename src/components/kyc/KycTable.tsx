@@ -2,7 +2,6 @@
 
 import Routes from '@/app/routes';
 import { useUsers } from '@/providers/UserProvider';
-import formatDate from '@/utils/DateFormat';
 import { AccountType, User } from '@/utils/interfaces/user';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -11,29 +10,29 @@ import { FaUser } from 'react-icons/fa';
 import AestheticTabbar from '../switch/AestheticTabbar';
 
 interface props{
-  search?: string,
+  search?: string
 }
 
-export default function UsersTable({search=''}:props) {
+export default function KycTable({search= ''}:props) {
     const {users} = useUsers();
     const [filter] = useState<AccountType | 'all'>('all')
     const [tabIndex, selectIndex] = useState<number>(0);
     const router = useRouter();
 
-    const filteredUsers = useMemo(()=>users.filter(u => (filter === 'all' || u.accountType === filter) && (u.firstName + " " + u.lastName).toLowerCase().trim().includes(search.trim().toLowerCase())),[users, search, filter])
+    const filteredUsers = useMemo(()=>users.filter(u => (filter === 'all' || u.accountType === filter) && u.kycTier !== u.kyccurrentTier && (u.firstName + " " + u.lastName).toLowerCase().trim().includes(search.trim().toLowerCase()) ),[users, search, filter])
   return (
     <div className='rounded-lg shadow-lg w-full h-fit min-h-[400px] px-5 pb-5 bg-white mb-8'>
         <div className='flex items-center justify-between py-4 my-5'>
             <h1 className="text-[24px] font-bold">
-                {filter === "all" && "All Users"}
-                {filter === "company" && "Company Users"}
-                {filter === "business" && "Business Users"}
-                {filter === "merchant" && "Merchant Users"}
-                {filter === "personal" && "Personal Users"}
+                {filter === "all" && "All KYC"}
+                {filter === "company" && "Company KYC"}
+                {filter === "business" && "Business KYC"}
+                {filter === "merchant" && "Merchant KYC"}
+                {filter === "personal" && "Personal KYC"}
             </h1>
 
             <div className='w-[300px]'>
-                <AestheticTabbar className='h-[40px]' tabs={['All', 'Category', 'Visibility']} onSelectTab={selectIndex} index={tabIndex} />
+                <AestheticTabbar className='h-[40px]' tabs={['All', 'Category', 'Tier']} onSelectTab={selectIndex} index={tabIndex} />
             </div>
         </div>
 
@@ -48,16 +47,13 @@ export default function UsersTable({search=''}:props) {
                     Category
                   </th>
                   <th className="py-3 text-center font-bold">
-                    Email
+                    Upload Type
                   </th>
                   <th className="py-3 text-center font-bold">
-                    Transactions
-                  </th>
-                  <th className="py-3 text-center font-bold">
-                    Joined
+                    Current Tier
                   </th>
                   <th className="py-3 text-center font-bold pr-3">
-                    KYC Level
+                    Request Tier
                   </th>
                 </tr>
               </thead>
@@ -65,7 +61,7 @@ export default function UsersTable({search=''}:props) {
                 {
                   filteredUsers.length <=0 && (
                     <tr>
-                      <td colSpan={6} className="text-center py-4">{search.trim().length !== 0? `No search results for '${search.trim()}'`:`No ${filter === 'all'? "\b": filter.charAt(0).toUpperCase() + filter.substring(1)} users found`}</td>
+                      <td colSpan={5} className="text-center py-4">{search.trim().length !== 0? `No search results for '${search.trim()}'`:`No ${filter === 'all'? "KYC": filter.charAt(0).toUpperCase() + filter.substring(1)} requests found`}</td>
                     </tr>
                   )
                 }
@@ -75,7 +71,7 @@ export default function UsersTable({search=''}:props) {
                     return <tr
                     key={index}
                     onClick={() => {
-                      router.push(Routes.dashboard.users.path + "/" + user._id);
+                      router.push(Routes.dashboard.users.path + "/" + user._id + "/?v=kyc");
                     }}
                     className="cursor-pointer hover:bg-tertiary font-quicksand font-[400] border-b last:border-b-0 transition-[background-color] ease-in duration-[0.4s]"
                   >
@@ -100,14 +96,13 @@ export default function UsersTable({search=''}:props) {
                       </div>
                     </td>
                     <td className="py-3 text-center">{userData.accountCategory.charAt(0).toUpperCase() + userData.accountCategory.slice(1).toLowerCase()}</td>
-                    <td className="py-3 text-center">{user.email}</td>
                     <td className="py-3 text-center">
-                      {userData.transactionsString?.length}
-                    </td>
-                    <td className="py-3 text-center">
-                      {formatDate(userData.createdDate, false)}
+                      {user.kyccurrentTier === 1 && "Formal Picture"}
+                      {user.kyccurrentTier === 2 && "Identity Document"}
+                      {user.kyccurrentTier === 3 && "Nepa Bill"}
                     </td>
                     <td className="py-3 text-center">Teir {user.kycTier}</td>
+                    <td className="py-3 text-center">Teir {user.kyccurrentTier}</td>
                   </tr>
                   })
                 )}

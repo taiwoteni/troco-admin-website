@@ -5,6 +5,12 @@ import Transaction, { fullTransaction, } from "./transaction";
 
 export type AccountType = "company" | "business" | "merchant" | "personal"
 
+export type KYCDocument = {
+  photo:string,
+  driverLicense: string,
+  ninDocument: string,
+}
+
 export interface user{
     _id:string,
     firstName:string,
@@ -17,7 +23,7 @@ export interface user{
     refferal?:any,
     BusinessName:string,
     accountType?: AccountType,
-    kycDocuments?:any,
+    kycDocuments?: KYCDocument,
     address:string,
     lastSeen:string,
     city:string,
@@ -143,6 +149,12 @@ export class User {
 
     get kycTier():number{
         return this.data.kycTier;
+    }
+    get kycDocuments():KYCDocument | undefined{
+        return this.data.kycDocuments;
+    }
+    get kyccurrentTier():number{
+        return this.data.kyccurrentTier;
     }
 
     get verified():boolean{

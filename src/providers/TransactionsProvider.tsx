@@ -6,11 +6,13 @@ import { useQueries, useQueryClient } from "@tanstack/react-query"
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react"
 import { useAdmin } from "./AdminProvider"
 import { getOneAdminOrThrow } from "@/services/rest-api/admin-api"
-import { getAllTransactions } from "@/services/rest-api/transaction-api"
+import { getAllTransactions, getReportedTransactions } from "@/services/rest-api/transaction-api"
+import { reportDetail } from "@/utils/interfaces/report"
 
 type TransactionsAPI = {
     transactions: transaction[],
     allTransactions: transaction[],
+    reportedTransactions: reportDetail[],
     refetch: ()=>Promise<void>
 }
 
@@ -27,6 +29,7 @@ export const useTransactions = ()=>{
 export default function TransactionsProvider({children}:{children?: ReactNode}){
     const [transactions, setTransactionsRaw] = useState<transaction[]>(getTransactions());
     const [allTransactions, setAllTransactionsRaw] = useState<transaction[]>([])
+    const [reportedTransactions, setReportedTransactionsRaw] = useState<reportDetail[]>([])
     const {admin} = useAdmin();
     const queryClient = useQueryClient();
 
@@ -38,6 +41,12 @@ export default function TransactionsProvider({children}:{children?: ReactNode}){
         
         return adminData.transactions;
     }, [admin, transactions])
+
+     const fetchReportedTransactions = useCallback(async()=>{
+        const result = await getReportedTransactions();
+
+        return result.data.data;
+    }, [])
 
     const fetchAllTransactions = useCallback(async()=>{
         const result = await getAllTransactions();
@@ -56,44 +65,57 @@ export default function TransactionsProvider({children}:{children?: ReactNode}){
             {
                 queryKey: ['transactions'],
                 queryFn: fetchAllTransactions,
+                enabled: admin?.role !== 'Admin',
+                refetchInterval: 3 * 1000,
+                notifyOnChangeProps: ['data', 'dataUpdatedAt']
+            }
+            ,
+            {
+                queryKey: ['transactions', 'reported'],
+                queryFn: fetchReportedTransactions,
                 refetchInterval: 3 * 1000,
                 notifyOnChangeProps: ['data', 'dataUpdatedAt']
             }
         ]
     });
 
-    const [transactionsQuery, allTransactionsQuery] = queries;
+    const [transactionsQuery, allTransactionsQuery, reportedTransactionsQuery] = queries;
 
     const dataChanged = useCallback(()=>{
         const transactionsChanged = JSON.stringify(transactionsQuery.data) !== JSON.stringify(transactions);
-        const allTransactionsChanged = JSON.stringify(allTransactionsQuery.data) !== JSON.stringify(allTransactions);
+        const allTransactionsChanged = JSON.stringify(allTransactionsQuery.data) !== JSON.stringify(allTransactions)
+        const reportedTransactionsChanged = JSON.stringify(reportedTransactionsQuery.data) !== JSON.stringify(reportedTransactions)
 
-        return transactionsChanged || allTransactionsChanged;
+        return transactionsChanged || allTransactionsChanged || reportedTransactionsChanged;
 
-    }, [transactionsQuery, allTransactionsQuery, allTransactions, transactions])
+    }, [transactionsQuery, allTransactionsQuery, reportedTransactionsQuery, reportedTransactions, allTransactions, transactions])
 
-    const setTransactions = useCallback((_transactions : [transaction[], transaction[]])=>{
+    const setTransactions = useCallback((_transactions : [transaction[], transaction[], reportDetail[]])=>{
         setTransactionsRaw((prev)=> _transactions[0] ?? prev);
         setAllTransactionsRaw((prev)=>_transactions[1] ?? prev);
+        setReportedTransactionsRaw((prev)=>_transactions[2] ?? prev);
     },[])
 
     const refetch = useCallback(async()=>{
-        await queryClient.refetchQueries({queryKey:[['transactions', admin?._id],['transactions']]})
+        await queryClient.refetchQueries({queryKey:[['transactions', admin?._id],['transactions'], ['transactions', 'reported']]})
     },[admin?._id, queryClient])
 
     useEffect(()=>{
         if (!dataChanged()) return;
 
-        setTransactions([transactionsQuery.data!, allTransactionsQuery.data!])
+        setTransactions([transactionsQuery.data!, allTransactionsQuery.data!, reportedTransactionsQuery.data!])
         
-    },[allTransactionsQuery.data, dataChanged, setTransactions, transactionsQuery.data])
+    },[allTransactionsQuery.data, dataChanged, setTransactions, transactionsQuery.data, reportedTransactionsQuery.data])
+
     useEffect(()=>{
+        // Super admins cannot save transactions because they oversee all transactions
+        if(admin?.role  === 'Super Admin') return;
         saveTransactions(transactions)
-    },[transactions])
+    },[transactions, admin])
 
 
     return (
-        <TransactionsContext.Provider value={{allTransactions, refetch, transactions}}>
+        <TransactionsContext.Provider value={{allTransactions, reportedTransactions, refetch, transactions}}>
             {children}
         </TransactionsContext.Provider>
     )

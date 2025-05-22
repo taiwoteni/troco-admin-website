@@ -1,0 +1,144 @@
+'use client'
+
+import { useAdmin } from '@/providers/AdminProvider';
+import { useTransactions } from '@/providers/TransactionsProvider'
+import { Transaction_Status, TransactionCategory } from '@/utils/interfaces/transaction';
+import React, { useMemo, useState } from 'react'
+import AestheticTabbar from '../switch/AestheticTabbar';
+import { useRouter } from 'next/navigation';
+import Routes from '@/app/routes';
+import Image from 'next/image';
+import { FaUser } from 'react-icons/fa6';
+import formatDate from '@/utils/DateFormat';
+import { formatCurrency } from '@/utils/Format';
+import { Colors } from '@/utils/Colors';
+
+export function getStatusColor(status:string):string{
+  switch(status.trim().toLowerCase()){
+      case 'pending':
+          return 'brown'
+      case 'in progress':
+          return '#ffc400';
+      case 'processing':
+          return '#ff33aa';
+      case 'ongoing':
+          return 'purple';
+      case 'finalizing':
+          return '#960096';   
+      case 'completed':
+          return Colors.themeColor;
+      case 'approved':
+          return Colors.themeColor;                  
+      default:
+          return 'red'
+  }
+}
+
+interface props{
+  search?: string
+}
+
+export default function TransactionTable({search=''}:props) {
+    const {admin} = useAdmin();
+    const [filter] = useState<TransactionCategory | Transaction_Status | 'all'>('all')
+    const [tabIndex, selectIndex] = useState<number>(0);
+    const {allTransactions, transactions} = useTransactions();
+    const router = useRouter();
+
+    const filteredTransactions = useMemo(()=>(admin?.role === 'Super Admin'? allTransactions : transactions).filter(t =>  (filter === 'all' || [t.typeOftransaction, t.status].includes(filter)) && t.transactionName.toLowerCase().includes(search.trim().toLowerCase())),[admin?.role, allTransactions, transactions, filter, search])
+
+    
+  return (
+    <div className='rounded-lg shadow-lg w-full h-fit min-h-[400px] px-5 pb-5 bg-white mb-8'>
+        <div className='flex items-center justify-between py-4 my-5'>
+            <h1 className="text-[24px] font-bold">
+                {filter === "all" && "All Transactions"}
+                {filter === "product" && "Product Transactions"}
+                {filter === "service" && "Service Transactions"}
+                {filter === "virtual" && "Virtual Transactions"}
+                {!['all', 'product', 'service', 'virtual'].includes(filter) && `${filter} Transactions`}
+            </h1>
+
+            <div className='w-[300px]'>
+                <AestheticTabbar className='h-[40px]' tabs={['All', 'Category', 'Status']} onSelectTab={selectIndex} index={tabIndex} />
+            </div>
+        </div>
+
+        <div className="w-full h-fit rounded-lg border border-separate border-spacing-0 overflow-hidden">
+            <table className="w-full rounded-lg border table-fixed border-spacing-0 text-[14px] overflow-hidden">
+              <thead className="px-5 py-3 h-[60px] border-b">
+                <tr className='bg-tertiary'>
+                <th className="pl-5 py-3 text-start font-bold">
+                    Creator
+                  </th>
+                  <th className="py-3 text-center font-bold">
+                    Name
+                  </th>
+                  <th className="py-3 text-center font-bold">
+                    Category
+                  </th>
+                  <th className="py-3 text-center font-bold">
+                    Created
+                  </th>
+                  <th className="py-3 text-center font-bold">
+                    Status
+                  </th>
+                  <th className="py-3 text-center font-bold">
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  filteredTransactions.length <=0 && (
+                    <tr>
+                      <td colSpan={6} className="text-center py-4">{search.trim().length !== 0? `No search results for '${search.trim()}'`:`No ${filter === 'all'? "\b": filter.charAt(0).toUpperCase() + filter.substring(1)} transactions found`}</td>
+                    </tr>
+                  )
+                }
+                {filteredTransactions.length !== 0 && (
+                  filteredTransactions.map((transaction, index) => {
+                    // const userData = new User(transaction)
+                    return <tr
+                    key={index}
+                    onClick={() => {
+                      router.push(Routes.dashboard.transactions.path + "/" + transaction._id);
+                    }}
+                    className="cursor-pointer hover:bg-tertiary font-quicksand font-[400] border-b last:border-b-0 transition-[background-color] ease-in duration-[0.4s]"
+                  >
+                    <td className="py-3 pl-3  overflow-hidden">
+                      <div className="flex gap-2 items-center">
+                        {transaction.creatorImage ? (
+                          <Image
+                            src={transaction.creatorImage}
+                            width={36}
+                            height={36}
+                            alt="profile pic"
+                            className="rounded-full w-[36px] h-[36px] object-cover"
+                          />
+                        ) : (
+                          <div className="rounded-full w-[36px] h-[36px] overflow-hidden bg-gray-200 flex items-end justify-center">
+                            <FaUser className="text-gray-400 text-[32px]" />
+                          </div>
+                        )}
+                        <p>{transaction.creatorName}</p>
+                      </div>
+                    </td>
+                    <td className="py-3 text-center overflow-hidden text-ellipsis whitespace-nowrap">{transaction.transactionName}</td>
+                    <td className="py-3 text-center">{transaction.typeOftransaction}</td>
+                    <td className="py-3 text-center">
+                      {formatDate(transaction.createdTime,false)}
+                    </td>
+                    <td style={{color: getStatusColor(transaction.status)}} className="py-3 text-center font-medium">
+                      {transaction.status}
+                    </td>
+                    <td className="py-3 text-center font-medium">{!transaction.totalTransactionAmount?"Free" : formatCurrency(transaction.totalTransactionAmount)}</td>
+                  </tr>
+                  })
+                )}
+              </tbody>
+            </table>
+        </div>
+    </div>
+  )
+}

@@ -3,6 +3,7 @@ import { apiGateway, errorApiGateway } from "./Core";
 import { ApiResponse } from "@/utils/interfaces/api-resonse";
 import { fullTransaction, transaction } from "@/utils/interfaces/transaction";
 import EscrowCharge from "@/utils/interfaces/escrow-charge";
+import { reportDetail } from "@/utils/interfaces/report";
 
 export async function getOneTransaction(transactionId: string){
     const result =  await apiGateway.get(`/getOneTransaction/${transactionId}`);
@@ -19,6 +20,13 @@ export async function getAllTransactions(throwError?: boolean){
     
     const result = await gateway.get(`/getalltransactions`);
     return result as AxiosResponse<ApiResponse<transaction[]>, unknown>;
+}
+
+export async function getReportedTransactions(throwError?: boolean){
+    const gateway: AxiosInstance = throwError? errorApiGateway : apiGateway;
+    
+    const result = await gateway.get(`/get_all_reported_transactions`);
+    return result as AxiosResponse<ApiResponse<reportDetail[]>, unknown>;
 }
 
 export async function getEscrowCharge(){

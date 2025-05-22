@@ -3,7 +3,9 @@ import { driver } from "./driver";
 import { reportDetail,} from "./report";
 import { SalesItem, salesitem } from "./sales-item";
 
+export type TransactionCategory = 'product' | 'service' | 'virtual'
 
+export type Transaction_Status = 'Pending' | 'InProgress' | 'Ongoing' | 'Processing' | 'Finalizing' | 'Completed' | 'Cancelled'
 export interface transaction{
     _id:string,
     transactionName:string,
@@ -16,7 +18,7 @@ export interface transaction{
     updatedAt:string,
     inspectionDays:number,
     inspectionPeriod:string,
-    typeOftransaction:string,
+    typeOftransaction: TransactionCategory,
     status:string,
     pricing:string[],
     driverInformation:string[],
