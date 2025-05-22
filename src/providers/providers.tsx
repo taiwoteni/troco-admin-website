@@ -1,5 +1,24 @@
+'use client';
+
+import {QueryClient, QueryClientProvider}  from '@tanstack/react-query'
 import AdminProvider from '@/providers/AdminProvider';
+import DashboardProvider from './DashboardProvider';
+import TransactionsProvider from './TransactionsProvider';
+import UsersProvider from './UserProvider';
+
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  return <AdminProvider>{children}</AdminProvider>;
+  const queryClient = new QueryClient()
+
+  return <QueryClientProvider client={queryClient}>
+    <AdminProvider>
+      <DashboardProvider>
+        <TransactionsProvider>
+          <UsersProvider>
+            {children}
+          </UsersProvider>
+        </TransactionsProvider> 
+      </DashboardProvider>
+    </AdminProvider>
+  </QueryClientProvider>;
 }
