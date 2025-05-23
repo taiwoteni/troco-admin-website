@@ -37,6 +37,7 @@ export const useUser = (userId: string)=>{
             {
                 queryKey: ['users', userId],
                 queryFn: ()=>convertApiMethod(getOneUser(userId, true)),
+                throwOnError: true,
                 notifyOnChangeProps: ['data', 'dataUpdatedAt'],
                 refetchInterval: 3.1 * 1000
 

@@ -178,7 +178,7 @@ export default function ViewUserPage() {
 
    const profileIcon = ()=>{
         return <div className="relative w-[100px] h-[100px] ">
-            <Image className="w-full h-full object-cover rounded-[50%]" alt={`${user!.fullName}'s profile photo`} width={200} height={200} src={user!.profile} priority={true} />
+            <Image className={`w-full h-full object-cover rounded-[50%] ${!user?.profile? 'scale-150':''}`} alt={`${user!.fullName}'s profile photo`} width={200} height={200} src={user?.profile ?? '/images/profile_img.png'} priority={true} />
             <div className="w-[27%] h-[27%] border-white border-[3px] box-border rounded-[50%] absolute bottom-[-2px] right-[8px] z-10" style={{backgroundColor:user!.online? Colors.themeColor:'red'}} />
         </div>
     }

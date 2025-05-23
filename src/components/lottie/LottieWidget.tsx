@@ -15,8 +15,11 @@ interface props{
 
 
 export default function LottieWidget({lottieAnimation, width, height, className='', loop=true}:props) {
+  const widthClassName = typeof width == 'number'? `w-[${width}px]`:`w-[${width ?? 'fit'}]`
+  const heightClassName = typeof height == 'number'? `h-[${height}px]`:`h-[${height ?? 'fit'}]`
+
     
   return (
-    <Lottie className={`${className} overflow-hidden`} animationData={lottieAnimation} color='#2196f3' loop={loop} width={width ?? 100} height={height ?? 100}  />
+    <Lottie className={` ${widthClassName} ${heightClassName} ${className} overflow-hidden`} animationData={lottieAnimation} color='#2196f3' loop={loop} width={width ?? 100} height={height ?? 100}  />
   )
 }
