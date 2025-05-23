@@ -16,3 +16,7 @@ export const errorApiGateway = axios.create({
     headers,
     validateStatus: (status)=> status>=200 && status <=299
 })
+
+export const getGateway = (throwError?: boolean)=>{
+    return throwError? errorApiGateway : apiGateway;
+}

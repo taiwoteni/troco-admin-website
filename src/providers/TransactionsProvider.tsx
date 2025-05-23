@@ -2,12 +2,13 @@
 
 import { transaction } from "@/utils/interfaces/transaction"
 import { getTransactions, saveTransactions } from "@/utils/storage/transaction-storage"
-import { useQueries, useQueryClient } from "@tanstack/react-query"
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react"
 import { useAdmin } from "./AdminProvider"
 import { getOneAdminOrThrow } from "@/services/rest-api/admin-api"
-import { getAllTransactions, getReportedTransactions } from "@/services/rest-api/transaction-api"
+import { getAllTransactions, getOneTransaction, getReportedTransactions } from "@/services/rest-api/transaction-api"
 import { reportDetail } from "@/utils/interfaces/report"
+import { convertApiMethod } from "./UserProvider"
 
 type TransactionsAPI = {
     transactions: transaction[],
@@ -24,6 +25,25 @@ export const useTransactions = ()=>{
     if(!context) throw Error("`useTransactions` must be used within `TransactionsProvider`")
 
     return context; 
+}
+
+export const useTransaction = (id: string)=>{
+    const queryClient = useQueryClient();
+    const transactionQuery = useQuery({
+        queryKey: ['transactions', id],
+        queryFn: ()=>convertApiMethod(getOneTransaction(id, )),
+        throwOnError: true,
+        notifyOnChangeProps: ['data', 'dataUpdatedAt'],
+        refetchInterval: 3.1 * 1000
+
+    },);
+
+    const refresh = useCallback(async()=>{
+        await queryClient.refetchQueries({queryKey:['transactions', id]})
+    }, [id, queryClient])
+
+
+    return {transaction:transactionQuery.data, refresh};
 }
 
 export default function TransactionsProvider({children}:{children?: ReactNode}){
