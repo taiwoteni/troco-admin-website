@@ -59,7 +59,7 @@ export default function TrackTransaction({onCancel}:props) {
                     onCancel()
                     return;
                 }
-                router.push(Routes.dashboard.group.path + "/" + trackedId);
+                router.push(Routes.dashboard.orders.path + "/" + trackedId);
                 onCancel()
 
             }}

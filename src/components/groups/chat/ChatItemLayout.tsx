@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Group, Message } from '../GroupItemLayout'
 import { Colors } from '../../../utils/Colors';
 import Image from 'next/image';
+import { Group } from '@/utils/interfaces/group';
+import { Message } from '@/utils/interfaces/message';
 interface props{
     message:Message,
     group:Group,
