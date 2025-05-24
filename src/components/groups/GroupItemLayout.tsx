@@ -1,30 +1,8 @@
 'use client';
 
+import { Group } from "@/utils/interfaces/group";
 import Image from "next/image";
 import React from "react";
-
-export interface Message {
-  content?: string;
-  thumbnail?: string;
-  attachment?: string;
-  _id: string;
-  profile?:string;
-  sender?: string;
-  readBy: string[];
-  timestamp:string;
-}
-
-export interface Group {
-  name: string;
-  deadlineTime: string;
-  creationTime: string;
-  useDelivery: boolean;
-  adminId: string;
-  _id: string;
-  members:string[];
-  messages: Message[];
-  creator: string;
-}
 
 function senderText(group: Group): string {
   const messages = group.messages;
@@ -61,7 +39,7 @@ function senderText(group: Group): string {
 function messageText(group: Group): string {
   const messages = group.messages;
   if (messages.length == 0) {
-    return "This Group was created";
+    return "This Order was created";
   }
 
   const lastMessage = messages[messages.length - 1];
@@ -86,10 +64,10 @@ function messageText(group: Group): string {
 
 interface props {
   group: Group;
-  unreadMessages?: number;
+  hasUnreadMessages?: boolean;
 }
 
-export default function GroupItemLayout({ group, unreadMessages = 0 }: props) {
+export default function GroupItemLayout({ group, hasUnreadMessages = false }: props) {
   return (
     <div className="flex items-center mb-2 justify-between gap-5 py-2 px-4 cursor-pointer">
       <div className="flex flex-1 gap-3">
@@ -107,7 +85,7 @@ export default function GroupItemLayout({ group, unreadMessages = 0 }: props) {
           <p className="font-semibold" style={{ fontSize: "14.25px" }}>
             {group.name}
           </p>
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <div className="font-quicksand" style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             {senderText(group).trim().length !== 0 && (
               <p
                 className="text-gray-500"
@@ -123,10 +101,7 @@ export default function GroupItemLayout({ group, unreadMessages = 0 }: props) {
         </div>
     
       </div>
-      { unreadMessages > 0 &&
-              <div className=" text-center font-bold text-[11px] w-[24px] h-[24px] text-white rounded-[50%] inline-flex items-center justify-center bg-themeColor">
-                {unreadMessages>99? "99+":unreadMessages}
-              </div>}
+      {hasUnreadMessages && <div className="w-1.5 h-1.5 rounded-[50%] bg-themeColor"/>}
     </div>
   );
 }

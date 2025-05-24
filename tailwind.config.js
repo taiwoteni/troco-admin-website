@@ -43,7 +43,7 @@ module.exports = {
           'border-radius': '10px',
         },
         '.custom-scrollbar::-webkit-scrollbar-thumb': {
-          background: '#109E15',
+          background: 'transparent',
           'border-radius': '10px',
         },
         '.custom-scrollbar::-webkit-scrollbar-thumb:hover': {

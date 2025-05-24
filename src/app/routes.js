@@ -16,20 +16,20 @@ dashboard:{
     transactions:{
         path:"/dashboard/transactions"
     },
-    group:{
-        path:"/dashboard/group"
+    orders:{
+        path:"/dashboard/orders"
     },
     customerCare:{
         path:"/dashboard/customer-service-chat"
     },
     allAdmin:{
-        path:"/dashboard/admin"
+        path:"/dashboard/admins"
     },
     allCustomerCare:{
-        path:"/dashboard/all-customer-care"
+        path:"/dashboard/customer-cares"
     },
     withdrawal:{
-        path:"/dashboard/withdrawal"
+        path:"/dashboard/withdrawals"
     },
     bonuses:{
         path:"/dashboard/bonuses"

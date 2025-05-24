@@ -1,8 +1,8 @@
 'use client'
 
+import { Group } from "@/utils/interfaces/group";
 import Image from "next/image";
 import React, { CSSProperties } from "react";
-import { Group } from "./GroupItemLayout";
 
 function senderText(group: Group, userId:string): string {
   if(group.creator === userId){
