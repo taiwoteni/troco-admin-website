@@ -5,6 +5,8 @@ import AdminProvider from '@/providers/AdminProvider';
 import DashboardProvider from './DashboardProvider';
 import TransactionsProvider from './TransactionsProvider';
 import UsersProvider from './UserProvider';
+import BonusesProvider from './BonusesProvider';
+import WithdrawalsProvider from './WithdrawalsProvider';
 
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -15,7 +17,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <DashboardProvider>
         <TransactionsProvider>
           <UsersProvider>
-            {children}
+            <BonusesProvider>
+              <WithdrawalsProvider>
+                {children}
+              </WithdrawalsProvider>
+            </BonusesProvider>
           </UsersProvider>
         </TransactionsProvider> 
       </DashboardProvider>

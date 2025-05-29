@@ -18,7 +18,7 @@ function QueryErrorFallback({ error, resetErrorBoundary, message }: QueryErrorFa
         console.error(error)
     },[error])
   return (
-    <div className='w-full h-full flex flex-col gap-2 flex-center'>
+    <div className='w-full h-full flex flex-col gap-2 flex-center bg-white'>
         <LottieWidget lottieAnimation={errorAnim} className='w-[200px] h-[200px] aspect-square object-cover' />
         <h2 className='text-[25px] font-bold font-lato'>An Error Occurred</h2>
         <p className='text-secondary text-center font-quicksand -mt-1 text-sm'>
