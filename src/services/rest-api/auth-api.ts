@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AdminRole } from "@/utils/interfaces/admin";
-import { apiGateway, errorApiGateway } from "./Core"
+import { apiGateway, errorApiGateway, getGateway } from "./Core"
 import { AxiosResponse } from "axios";
 import { ApiResponse } from "@/utils/interfaces/api-resonse";
 
@@ -11,9 +11,9 @@ export type AdminAuthPayload = {
     password: string
 }
 
-export const logoutAdmin = async(adminId: string) =>{
-    const logout = await apiGateway.patch(`/logoutadmin/${adminId}`);
-    return logout;
+export const logoutAdmin = async(adminId: string, throwError?: boolean) =>{
+    const logout = await getGateway(throwError).patch(`/logoutadmin/${adminId}`);
+    return logout as AxiosResponse<ApiResponse, any>;
 }
 
 export const registerAdmin = async(admin: AdminAuthPayload)=>{

@@ -50,7 +50,7 @@ export default function ChatItemLayout({message, group, firstSender=true, sameSe
         }}
         onClick={()=>setShowTime(!showTime)}>
             {firstSender && !isSender && <p className='text-[11px] font-extrabold self-start'>{senderText(group, message)}</p>}
-            <p>{message.content ?? ""}</p>
+            <p className='font-quicksand'>{message.content ?? ""}</p>
         </div>}
         </div>
     }

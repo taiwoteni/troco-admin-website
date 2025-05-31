@@ -30,18 +30,25 @@ export default function SideBar() {
                 <div className="w-[5px] h-[50px] rounded-r-lg bg-themeColor" />
               )} */}
               <Link  href={item.path}
+              onClick={!item.negative? undefined: (e)=>{
+                e.preventDefault();
+                e.stopPropagation();
+
+                if(item.onClick){
+                  item.onClick();
+                }
+              }}
                 className={`${(index === 0? pathName === item.path:pathName.startsWith(item.path))
                   ? "text-white bg-themeColor"
                   : "text-secondary"
-                  } justify-start rounded-xl p-5 h-[60px] w-full px-5 font-semibold text-sm flex items-center gap-x-5 relative`}>
+                  } ${item.negative? 'text-red-500 bg-white':''} justify-start rounded-xl p-5 h-[60px] w-full px-5 font-semibold text-sm flex items-center gap-x-5 relative`}>
     
     
-                <div className={`w-[20px] ${(index === 0? pathName === item.path:pathName.startsWith(item.path))? 'text-white':'text-themeColor'}`}>
+                <div className={`w-[20px] ${(index === 0? pathName === item.path:pathName.startsWith(item.path))? 'text-white':'text-themeColor'}  ${item.negative? 'text-red-500':''}`}>
                   {item.icon}
                 </div>
     
-                <span className={`${(index === 0? pathName === item.path:pathName.startsWith(item.path))
-                  ? "text-white" : "text-[#495065]"} flex-1 text-start ${expand?'':'text-transparent'} text-[16px] font-semibold`}>
+                <span className={`flex-1 text-start  ${item.negative? 'text-red-500':''} ${expand?'':'text-transparent'} whitespace-nowrap text-ellipsis  text-[16px] font-semibold`}>
                   {item.title}
                 </span>
               </Link>

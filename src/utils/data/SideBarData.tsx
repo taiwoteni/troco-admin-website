@@ -10,11 +10,14 @@ import { GrMoney } from 'react-icons/gr';
 import { MdSpaceDashboard } from "react-icons/md";
 import { PiWarningCircleFill, PiWechatLogo } from "react-icons/pi";
 import { RiCustomerService2Fill, RiVerifiedBadgeFill } from "react-icons/ri";
+import { LogoutCurve } from 'iconsax-react';
 
 export type SideBarData = {
     icon: JSX.Element,
     path: string,
     title: string,
+    onClick?: ()=>Promise<void>,
+    negative?: boolean
 }
 
 export const SideBarArray : SideBarData[] = [
@@ -48,7 +51,7 @@ export const SideBarArray : SideBarData[] = [
 
 export const useSideBarMenu = (): SideBarData[] =>{
   const basicData = Array.from(SideBarArray);
-  const {admin} = useAdmin();
+  const {admin, logout} = useAdmin();
 
   if(!admin) return basicData;
 
@@ -64,7 +67,7 @@ export const useSideBarMenu = (): SideBarData[] =>{
     basicData.push({
       icon: <PiWechatLogo className='w-[25px] h-[25px]' />,
       title:'Sessions',
-      path: routes.dashboard.customerCare.path
+      path: routes.dashboard.sessions.path
     });
   }
 
@@ -92,7 +95,12 @@ export const useSideBarMenu = (): SideBarData[] =>{
       icon: <FaUserCircle className='w-[25px] h-[25px]' />,
       title:'Profile',
       path: routes.dashboard.settings.path
-    })
+    }, {
+      title: "Logout",
+      icon: <LogoutCurve variant='Bold' size={'25px'} color='red' className='text-red' />,
+      path:"",
+      negative: true,
+      onClick: logout});
 
   
 

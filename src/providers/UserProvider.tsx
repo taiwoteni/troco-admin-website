@@ -30,7 +30,7 @@ export async function convertApiMethod<T>(method: Promise<AxiosResponse<ApiRespo
 
 }
 
-export const useUser = (userId: string)=>{
+export const useUser = (userId: string, loadOtherDetails?:boolean)=>{
     const queryClient = useQueryClient();
     const queries = useQueries({
         queries:[
@@ -44,6 +44,7 @@ export const useUser = (userId: string)=>{
             },
             {
                 queryKey: ['wallet', userId],
+                enabled: loadOtherDetails ?? true,
                 queryFn: ()=>convertApiMethod(getWalletHistory(userId, true)),
                 notifyOnChangeProps: ['data', 'dataUpdatedAt'],
                 refetchInterval: 3.1 * 1000
@@ -51,6 +52,7 @@ export const useUser = (userId: string)=>{
             },
             {
                 queryKey: ['referrals', userId],
+                enabled: loadOtherDetails ?? true,
                 queryFn: ()=>convertApiMethod(getUserReferralHistory(userId, true)),
                 notifyOnChangeProps: ['data', 'dataUpdatedAt'],
                 refetchInterval: 3.1 * 1000
@@ -64,7 +66,7 @@ export const useUser = (userId: string)=>{
 
     const [userQuery, walletQuery, referralQuery] = queries;
 
-    return {user:userQuery.data, wallet:walletQuery.data, referrals:referralQuery.data, refresh};
+    return {user:userQuery.data, userLoading:userQuery.isPending, wallet:walletQuery.data, walletLoading: walletQuery.isPending, referrals:referralQuery.data, refresh};
 
 }
 

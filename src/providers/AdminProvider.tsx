@@ -1,6 +1,7 @@
 'use client';
 
 import Routes from '@/app/routes';
+import PopupModal from '@/components/modal/PopupModal';
 import { getOneAdminOrThrow } from '@/services/rest-api/admin-api';
 import { logoutAdmin } from "@/services/rest-api/auth-api";
 import Admin from "@/utils/interfaces/admin"
@@ -36,6 +37,7 @@ export const useAdmin = ()=>{
 export default function AdminProvider({children}: {children?: ReactNode}) {
     const [admin, setAdminRaw] = useState<Admin | undefined>(getAdminDetails());
     const [notifications, setNotificationsRaw] = useState<Notification[]>([])
+    const [show, showLogoutModel] = useState(false);
     const [groups, setGroupsRaw] = useState<Group[]>([])
     const [customerCareSessions, setSessionsRaw] = useState<CustomerCareSession[]>([])
     const router = useRouter();
@@ -91,16 +93,22 @@ export default function AdminProvider({children}: {children?: ReactNode}) {
     const refetch = useCallback(()=>client.refetchQueries({queryKey: ['admin']}),[client]);
 
     const logout = useCallback(async ()=>{
-        if(!admin?._id){
+       showLogoutModel(true)
+    },[])
+
+    const signOut = useCallback(async ()=>{
+         if(!admin?._id){
             router.push(Routes.auth.path);
+            showLogoutModel(false);
+            return;
         }
         const result = await logoutAdmin(admin!._id);
         if(result.status === 200){
             setAdmin(undefined)
             router.push(Routes.auth.path);
-            return;
+            showLogoutModel(false)
         }
-    },[admin, router, setAdmin])
+    }, [admin, router, setAdmin])
 
     useEffect(()=>{
         if(!admin || !adminData) return;
@@ -120,7 +128,20 @@ export default function AdminProvider({children}: {children?: ReactNode}) {
 
   return (
     <AdminContext.Provider value={{admin, setAdmin, logout, customerCareSessions, groups, notifications, refetch}}>
-        {children}
+        <>
+         {children}
+         {show && <PopupModal
+            modal={{
+                title: "Logout",
+                question: "Are you sure you want to logout of this account?",
+                negative: true,
+                okText: "Yes",
+                cancelText: "No",
+                onCancel: ()=>showLogoutModel(false),
+                onOk: signOut
+            }}
+         />}
+        </>
     </AdminContext.Provider>
   )
 }

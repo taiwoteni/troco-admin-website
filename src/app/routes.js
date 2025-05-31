@@ -19,8 +19,8 @@ dashboard:{
     orders:{
         path:"/dashboard/orders"
     },
-    customerCare:{
-        path:"/dashboard/customer-service-chat"
+    sessions:{
+        path:"/dashboard/sessions"
     },
     allAdmin:{
         path:"/dashboard/admins"
