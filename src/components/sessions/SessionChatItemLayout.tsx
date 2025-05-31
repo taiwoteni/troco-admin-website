@@ -1,29 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Colors } from '../../../utils/Colors';
+import { Colors } from '@/utils/Colors';
 import Image from 'next/image';
+import { SessionChat } from '@/utils/interfaces/session-message';
 
-interface Sender{
-    email:string,
-    _id:string,
-}
-
-export interface SessionMessage {
-    content?: string;
-    thumbnail?: string;
-    attachment?: string;
-    _id: string;
-    profile?:string;
-    sender?: Sender;
-    readBy: string[];
-    timestamp:string;
-  }
 
 interface props{
-    message:SessionMessage,
+    message:SessionChat,
     clientId:string,
-    clientProfile:string,
     firstSender?:boolean,
     lastSender?:boolean,
     sameSender?:boolean,
@@ -35,17 +20,17 @@ const formatTime = (dateString:string) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
-function senderText(senderId: string, message:SessionMessage): string {
-    if (message.sender?._id === senderId) {
+function senderText(senderId: string, message:SessionChat): string {
+    if (message.sender === senderId) {
       return "Client ";
     }
   
     return "Admin ";
   }
 
-export default function SessionChatItemLayout({message, clientProfile, clientId, firstSender=true, sameSender = false, lastSender=false, lastMessageSent=false}:props) {
+export default function SessionChatItemLayout({message, clientId, firstSender=true, sameSender = false, lastSender=false, lastMessageSent=false}:props) {
     /// if the person is the admin of the group, or a super admin
-    const isSender = message.sender?._id !== clientId;
+    const isSender = message.sender !== clientId;
     const alignViewsBottom = !message.attachment;
     const profileIconSize = 30;
 
@@ -64,7 +49,7 @@ export default function SessionChatItemLayout({message, clientProfile, clientId,
         }}
         onClick={()=>setShowTime(!showTime)}>
             {firstSender && !isSender && <p className='text-[11px] font-extrabold self-start'>{senderText(clientId, message)}</p>}
-            <p>{message.content ?? ""}</p>
+            <p className='font-quicksand'>{message.content ?? ""}</p>
         </div>}
         </div>
     }
@@ -83,7 +68,7 @@ export default function SessionChatItemLayout({message, clientProfile, clientId,
             alignItems:alignViewsBottom? 'flex-end':'center',
             flexDirection:isSender?'row-reverse':'row'
             }}>
-        {(lastSender ? lastSender : lastMessageSent) && !isSender && <Image src={clientProfile} width={profileIconSize} height={profileIconSize} alt='userImage' style={{width:profileIconSize,height:profileIconSize,borderRadius:'50%', objectFit:'cover', margin:'0px 10px',}} />}
+        {(lastSender ? lastSender : lastMessageSent) && !isSender && <Image src={'/images/profile_img.png'} width={profileIconSize} height={profileIconSize} alt='userImage' className='scale-150' style={{width:profileIconSize,height:profileIconSize,borderRadius:'50%', objectFit:'cover', margin:'0px 10px',}} />}
         {chatElement()}
         {showTime && <p className='text-[10px] font-bold bottom-1 px-4 transition-all ease-in duration-1000'>{formatTime(message.timestamp)}</p>}
         </div>

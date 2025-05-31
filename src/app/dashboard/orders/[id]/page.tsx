@@ -36,7 +36,7 @@ export default function ChatsPage() {
     });
 
     if(!order || !messages) return (
-        <div className='w-full h-full'>
+        <div className='w-full h-full rounded-2xl shadow-md box-border overflow-hidden'>
           <LoadingLayout lottie={errorAnim} label={admin?.role === 'Super Admin'? "This Order doesn't exist" :"This order cannot be found.\n Or you are not in charge of it."} className={`w-full h-full ${admin?.role === 'Super Admin'? '':'text-[1.5vh]' }`} />
         </div>
     )

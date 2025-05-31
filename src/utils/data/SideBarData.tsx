@@ -67,7 +67,7 @@ export const useSideBarMenu = (): SideBarData[] =>{
     basicData.push({
       icon: <PiWechatLogo className='w-[25px] h-[25px]' />,
       title:'Sessions',
-      path: routes.dashboard.customerCare.path
+      path: routes.dashboard.sessions.path
     });
   }
 

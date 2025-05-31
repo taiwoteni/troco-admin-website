@@ -45,7 +45,7 @@ export default function TransactionTable({search=''}:props) {
     const {allTransactions, transactions} = useTransactions();
     const router = useRouter();
 
-    const filteredTransactions = useMemo(()=>(admin?.role === 'Super Admin'? allTransactions : transactions).filter(t =>  (filter === 'all' || [t.typeOftransaction, t.status].includes(filter)) && t.transactionName.toLowerCase().includes(search.trim().toLowerCase())),[admin?.role, allTransactions, transactions, filter, search])
+    const filteredTransactions = useMemo(()=>(admin?.role !== 'Admin'? allTransactions : transactions).filter(t =>  (filter === 'all' || [t.typeOftransaction, t.status].includes(filter)) && t.transactionName.toLowerCase().includes(search.trim().toLowerCase())),[admin?.role, allTransactions, transactions, filter, search])
 
     
   return (

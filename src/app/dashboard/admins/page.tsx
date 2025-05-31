@@ -1,5 +1,6 @@
 'use client'
 
+import AdminsTable from '@/components/admins/AdminsTable';
 import SearchBar from '@/components/search-bar/SearchBar';
 import React, { useState } from 'react'
 
@@ -19,6 +20,8 @@ export default function AdminsPage() {
         </div>
         
       </div>
+
+      <AdminsTable search={search}  />
     </div>
   )
 }
