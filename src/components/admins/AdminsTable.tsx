@@ -7,6 +7,7 @@ import { useAdmins } from '@/hooks/admins-hook';
 import Routes from '@/app/routes';
 import { FaUser } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
+import { distinctStringList } from '@/utils/ArrayUtil';
 
 export default function AdminsTable({search}:{search:string}) {
     const menus : (AdminRole | 'All')[] = ['All', 'Admin', 'Super Admin', 'Secretary', 'Customer Care'];
@@ -83,12 +84,12 @@ export default function AdminsTable({search}:{search:string}) {
                     <td className="py-3 text-center">{admin.role}</td>
                     <td className="py-3 text-center">{admin.email}</td>
                     <td className="py-3 text-center">
-                      {(admin.role === 'Customer Care'? (admin.sessions ?? []) : (admin.groups ?? [])).length === 0? "None":(admin.role === 'Customer Care'? (admin.sessions ?? []) : (admin.groups ?? [])).length}
+                      {(admin.role === 'Customer Care'? (admin.sessions ?? []) : (admin.groups ?? [])).length === 0? "None": distinctStringList(admin.role === 'Customer Care'? (admin.sessions ?? []) : (admin.groups ?? [])).length}
                     </td>
                     <td className="py-3 text-center">
-                     {admin.transactions.length === 0? "None":admin.transactions.length}
+                     {distinctStringList(admin.transactions).length === 0? "None":admin.transactions.length}
                     </td>
-                    <td className="py-3 text-center">{admin.blocked? "Blocked":"Allowed"}</td>
+                    <td className="py-3 text-center">{admin.blocked? "Yes":"No"}</td>
                 </tr>
                 })
                 )}

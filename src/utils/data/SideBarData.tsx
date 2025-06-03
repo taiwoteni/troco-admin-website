@@ -94,7 +94,7 @@ export const useSideBarMenu = (): SideBarData[] =>{
   basicData.push({
       icon: <FaUserCircle className='w-[25px] h-[25px]' />,
       title:'Profile',
-      path: routes.dashboard.settings.path
+      path: routes.dashboard.profile.path
     }, {
       title: "Logout",
       icon: <LogoutCurve variant='Bold' size={'25px'} color='red' className='text-red' />,

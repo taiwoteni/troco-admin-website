@@ -1,6 +1,6 @@
-import CustomerCareSession from "./customer-care-session"
 import { Group } from "./group"
 import Notification from "./Notification"
+import { Session } from "./session"
 import { transaction } from "./transaction"
 
 export default interface Admin{
@@ -18,6 +18,13 @@ export default interface Admin{
     groups: string[]
 }
 
+export interface AdminActivity{
+    _id: string,
+    content: string,
+    date: string,
+    time: string
+}
+
 export interface FullAdmin{
     active: boolean,
     blocked: boolean,
@@ -25,9 +32,9 @@ export interface FullAdmin{
     password: string,
     role: AdminRole,
     notifications: Notification[],
-    sessions: CustomerCareSession[],
+    sessions: Session[],
     transactions: transaction[],
-    activity: unknown[],
+    activity: AdminActivity[],
     username: string,
     _id: string,
     groups: Group[]

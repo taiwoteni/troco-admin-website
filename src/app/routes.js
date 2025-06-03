@@ -25,6 +25,9 @@ dashboard:{
     allAdmin:{
         path:"/dashboard/admins"
     },
+    charges:{
+        path:"/dashboard/charges"
+    },
     allCustomerCare:{
         path:"/dashboard/customer-cares"
     },
@@ -43,8 +46,8 @@ dashboard:{
     notifications:{
         path:"/dashboard/notifications"
     },
-    settings:{
-        path:"/dashboard/settings"
+    profile:{
+        path:"/dashboard/profile"
     }
 }
 }

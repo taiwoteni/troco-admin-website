@@ -9,6 +9,10 @@ function senderText(group: Group, userId:string): string {
     return "Creator of group"
   }
 
+  if(group.adminId === userId){
+    return "Admin of group"
+  }
+
   return "Buyer of group";
 }
 
