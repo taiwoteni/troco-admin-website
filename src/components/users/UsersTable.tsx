@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import Routes from '@/app/routes';
 import { useUsers } from '@/providers/UserProvider';
 import formatDate from '@/utils/DateFormat';
-import { AccountType, User } from '@/utils/interfaces/user';
+import { user, User } from '@/utils/interfaces/user';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useMemo, useState } from 'react'
@@ -16,24 +17,58 @@ interface props{
 
 export default function UsersTable({search=''}:props) {
     const {users} = useUsers();
-    const [filter] = useState<AccountType | 'all'>('all')
-    const [tabIndex, selectIndex] = useState<number>(0);
-    const router = useRouter();
+    const [filter, setFilter] = useState<'Online' | 'Offline' | 'all'>('all')
+    const router = useRouter();    
 
-    const filteredUsers = useMemo(()=>users.filter(u => (filter === 'all' || u.accountType === filter) && (u.firstName + " " + u.lastName).toLowerCase().trim().includes(search.trim().toLowerCase())),[users, search, filter])
+    const userOnline = (u: user)=>{
+      const currentTime = new Date();
+
+        const lastSeen = new Date(u.lastSeen);
+        
+        if(currentTime.getFullYear() !== lastSeen.getFullYear()){
+            return false;
+        }
+
+        if(currentTime.getMonth() !== lastSeen.getMonth()){
+            return false;
+        }
+
+        if(currentTime.getDay() !== lastSeen.getDay()){
+            return false;
+        }
+
+        if(currentTime.getHours() !== lastSeen.getHours()){
+            return false;
+        }
+
+        if((currentTime.getMinutes() - lastSeen.getMinutes()) <= 4){
+            return true;
+        }
+
+        return false;
+    };
+
+    const filterMethod = (u: user)=>{
+      const name = (u.firstName + " " + u.lastName).toLowerCase().trim().includes(search.trim().toLowerCase());
+      const category = (u.accountType ?? '').toLowerCase().trim().includes(search.trim().toLowerCase())
+      const online = userOnline(u) && filter === 'Online';
+      const offline = !userOnline(u) && filter === 'Offline';
+
+      return (name || category) && (filter == 'all' || online || offline) 
+    };
+
+    const filteredUsers = useMemo(()=>users.filter(u => filterMethod(u)),[users, filter, search])
   return (
     <div className='rounded-lg shadow-lg w-full h-fit min-h-[400px] px-5 pb-5 bg-white mb-8'>
         <div className='flex items-center justify-between py-4 my-5'>
             <h1 className="text-[24px] font-bold">
                 {filter === "all" && "All Users"}
-                {filter === "company" && "Company Users"}
-                {filter === "business" && "Business Users"}
-                {filter === "merchant" && "Merchant Users"}
-                {filter === "personal" && "Personal Users"}
+                {filter === "Offline" && "Offline Users"}
+                {filter === "Online" && "Online Users"}
             </h1>
 
             <div className='w-[300px]'>
-                <AestheticTabbar className='h-[40px]' tabs={['All', 'Category', 'Visibility']} onSelectTab={selectIndex} index={tabIndex} />
+                <AestheticTabbar className='h-[40px]' tabs={['All', 'Online', 'Offline']} onSelectTab={(o) => setFilter(o === 0? 'all': o ===1? 'Online':'Offline')} index={filter === 'all'? 0:filter === 'Online'?1:2} />
             </div>
         </div>
 

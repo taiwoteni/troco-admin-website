@@ -16,7 +16,7 @@ export default function UsersPage() {
       <div className='w-full h-fit flex flex-col gap-8 mt-2'>
         <div className='w-full flex justify-between'>
           <p className='text-secondary text-[26px] font-bold'>Users</p>
-          <SearchBar placeholder='Search By Name' value={search} onChangeText={setSearch}/>
+          <SearchBar placeholder='Search By Name or Category' value={search} onChangeText={setSearch}/>
         </div>
           {/* Analysis Cards */}
           <div className="w-full h-fit flex flex-wrap gap-4">
