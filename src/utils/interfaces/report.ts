@@ -1,4 +1,10 @@
+import { ApiResponse } from "./api-resonse";
+import { user } from "./user";
 import { shortUser } from "./withdrawal";
+
+export interface ReportUserResponse extends ApiResponse{
+  reportedUsers: user[]
+}
 
 export interface reportDetail{
     reporter:shortUser,

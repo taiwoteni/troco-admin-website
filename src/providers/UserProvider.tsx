@@ -82,13 +82,13 @@ export default function UsersProvider({children}:{children?: ReactNode}){
     const fetchAllUsers = useCallback(async()=>{
         const res = await getAllUsers(true)
 
-        return res.data.data;
+        return res.data.data.toReversed();
     },[])
 
     const fetchReportedUsers = useCallback(async()=>{
         const res = await getReportedUsers(true)
 
-        return res.data.data ?? [];
+        return res.data.reportedUsers.toReversed() ?? [];
     },[])
 
     const queries = useQueries({

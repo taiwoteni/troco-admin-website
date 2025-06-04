@@ -4,6 +4,7 @@ import { apiGateway, errorApiGateway } from "./Core";
 import { ApiResponse } from "@/utils/interfaces/api-resonse";
 import { referral } from "@/utils/interfaces/referral";
 import { walletTransaction } from "@/utils/interfaces/wallet-transaction";
+import { ReportUserResponse } from "@/utils/interfaces/report";
 
 export async function getAllUsers(throwError?: boolean){
     const gateway = throwError? errorApiGateway : apiGateway;
@@ -16,7 +17,7 @@ export async function getReportedUsers(throwError?: boolean){
     const gateway = throwError? errorApiGateway : apiGateway;
     
     const result = await gateway.get(`/get_reported_users`);
-    return result as AxiosResponse<ApiResponse<user[]>, unknown>;
+    return result as AxiosResponse<ReportUserResponse, unknown>;
 }
 
 export async function getOneUser(userId: string,throwError?: boolean){
