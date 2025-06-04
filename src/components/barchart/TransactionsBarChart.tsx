@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react'
-import AestheticTabbar from '../switch/AestheticTabbar';
+import React, { useMemo} from 'react'
 import { useTransactions } from '@/providers/TransactionsProvider';
 import { ChartData } from 'chart.js';
 import {Line} from 'react-chartjs-2';
@@ -9,7 +8,7 @@ import { distinctList } from '@/utils/ArrayUtil';
 import { Colors } from '@/utils/Colors';
 
 export default function TransactionsBarChart() {
-    const [tabIndex, selectIndex] = useState(0)
+    // const [tabIndex, selectIndex] = useState(0)
     const {allTransactions} = useTransactions();
 
     const uniqueTransactions = useMemo(()=>distinctList(allTransactions, '_id'), [allTransactions])
@@ -54,12 +53,12 @@ export default function TransactionsBarChart() {
     },[uniqueTransactions])
 
   return (
-    <div className='w-full min-h-[500px] bg-white shadow-lg rounded-2xl px-6 py-4'>
-        <div className='w-full flex items-center justify-between'>
+    <div className='w-full min-h-[500px] bg-white shadow-lg rounded-2xl gap-3 px-6 py-4'>
+        <div className='w-full flex items-center justify-start mb-3'>
             <h1 className='font-bold text-[21px]'>Transactions This Year</h1>
-            <div className='w-[200px]'>
+            {/* <div className='w-[200px]'>
                 <AestheticTabbar className='h-[47px]' tabs={['All', 'Revenue']} onSelectTab={selectIndex} index={tabIndex} />
-            </div>
+            </div> */}
         </div>
         <Line data={lineData} options={{ maintainAspectRatio: true, plugins: { legend: { display: false }, filler: { propagate: true }, colors: { forceOverride: true } }, scales: { x: { type: 'category', grid:{display:false} }, y: { type: 'linear', beginAtZero: true } } }} />
     </div>

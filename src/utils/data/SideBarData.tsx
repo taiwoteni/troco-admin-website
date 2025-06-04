@@ -3,12 +3,13 @@ import routes from '@/app/routes';
 import { useAdmin } from '@/providers/AdminProvider';
 import { JSX } from 'react';
 import { FaUserCircle, FaUsers } from 'react-icons/fa'
+import { TbCashBanknoteFilled } from "react-icons/tb";
 import { FaRepeat } from "react-icons/fa6";
 import { HiUserGroup } from "react-icons/hi"
 import { IoWallet } from 'react-icons/io5';
 import { GrMoney } from 'react-icons/gr';
 import { MdSpaceDashboard } from "react-icons/md";
-import { PiWarningCircleFill, PiWechatLogo } from "react-icons/pi";
+import { PiWarningCircleFill, PiWechatLogoFill } from "react-icons/pi";
 import { RiCustomerService2Fill, RiVerifiedBadgeFill } from "react-icons/ri";
 import { LogoutCurve } from 'iconsax-react';
 
@@ -55,6 +56,14 @@ export const useSideBarMenu = (): SideBarData[] =>{
 
   if(!admin) return basicData;
 
+  if(admin.role === 'Secretary' || admin.role === 'Super Admin'){
+    basicData.push({
+      icon: <TbCashBanknoteFilled className='w-[25px] h-[25px]' />,
+      title: 'Charges',
+      path: routes.dashboard.charges.path
+    })
+  }
+
   if(admin.role === 'Admin' || admin.role === 'Super Admin'){
     basicData.push({
       icon: <HiUserGroup className='w-[25px] h-[25px]' />,
@@ -65,7 +74,7 @@ export const useSideBarMenu = (): SideBarData[] =>{
 
   if(admin.role === 'Customer Care'){
     basicData.push({
-      icon: <PiWechatLogo className='w-[25px] h-[25px]' />,
+      icon: <PiWechatLogoFill className='w-[25px] h-[25px]' />,
       title:'Sessions',
       path: routes.dashboard.sessions.path
     });
@@ -94,7 +103,7 @@ export const useSideBarMenu = (): SideBarData[] =>{
   basicData.push({
       icon: <FaUserCircle className='w-[25px] h-[25px]' />,
       title:'Profile',
-      path: routes.dashboard.settings.path
+      path: routes.dashboard.profile.path
     }, {
       title: "Logout",
       icon: <LogoutCurve variant='Bold' size={'25px'} color='red' className='text-red' />,

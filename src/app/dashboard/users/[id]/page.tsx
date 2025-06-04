@@ -23,7 +23,7 @@ import CompactGroupItemLayout from '@/components/groups/CompactGroupItemLayout';
 import TransactionItemLayout from '@/components/transactions/TransactionItemLayout';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { approveKYC, blockUser, rejectKYC, revertKYC, sendMessageToUser, sendWalletBonus, unblockUser, updateUser } from '@/services/rest-api/user-api';
+import { approveKYC, blockUser, deleteUser, rejectKYC, revertKYC, sendMessageToUser, sendWalletBonus, unblockUser, updateUser } from '@/services/rest-api/user-api';
 import PopupModal from '@/components/modal/PopupModal';
 import modalProps from '@/utils/interfaces/modal';
 import { FaSpinner } from 'react-icons/fa6';
@@ -92,6 +92,19 @@ export default function ViewUserPage() {
         },
         onError: () => {
             toast.error(`Error ${user!.isBlocked ? 'unblock' : 'block'}ing user`);
+        },
+    }
+    );
+
+    const deleteUserMutation = useMutation({
+        mutationFn: ()=> deleteUser(user!.id, true),
+        onSuccess: async() => {
+            toast.success(`User has been deleted successfully`);
+            await userData.refresh();
+            router.back()
+        },
+        onError: () => {
+            toast.error(`Error deleting user`);
         },
     }
     );
@@ -248,6 +261,24 @@ export default function ViewUserPage() {
                     <button className={`rounded-[30px] w-[115px] py-[10px] font-semibold cursor-pointer ${user.isBlocked? 'border-red-500 text-red-500 border-[2px]':'bg-red-500 text-white'}`}
                         onClick={() => setIsModalOpen(true)}
                         disabled={blockUserMutation.isPending}>{blockUserMutation.isPending?'Hold On..':user.isBlocked?'Unblock':'Block'}</button>
+                    
+                    <button className={`rounded-[30px] w-[115px] py-[10px] font-semibold cursor-pointer ${!user.isBlocked? 'border-red-500 text-red-500 border-[2px]':'bg-red-500 text-white'}`}
+                        onClick={() =>{
+                          setModal({
+                            title:"Delete User",
+                            question:"Are you sure you want to delete this user?",
+                            negative:true,
+                            onOk: ()=>{
+                              setModal(undefined)
+                              deleteUserMutation.mutate()
+                            },
+                            onCancel: ()=>{
+                              setModal(undefined)
+                            },
+                            okText:'Yes, Delete'
+                          })
+                        }}
+                        disabled={deleteUserMutation.isPending}>{deleteUserMutation.isPending?'Deleting..':'Delete'}</button>
                   </div>
                 </div>
               </div>

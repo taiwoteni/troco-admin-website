@@ -67,6 +67,13 @@ export async function unblockUser(userId: string, adminId: string, throwError?: 
     return result as AxiosResponse<ApiResponse<unknown>, unknown>;
 }
 
+export async function deleteUser(userId: string, throwError?: boolean){
+    const gateway = throwError? errorApiGateway : apiGateway;
+    
+    const result = await gateway.delete(`/deleteuser/${userId}`);
+    return result as AxiosResponse<ApiResponse<unknown>, unknown>;
+}
+
 export async function sendWalletBonus(userId: string, amount:number, description: string, type: 'bonus' | 'refund', throwError?: boolean){
     const gateway = throwError? errorApiGateway : apiGateway;
     

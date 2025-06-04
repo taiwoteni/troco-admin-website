@@ -27,20 +27,20 @@ export const getAllCustomerCare = async(throwError?: boolean)=>{
     return result as AxiosResponse<ApiResponse<Admin[]>, unknown>;
 }
 
-export const blockAdmin = async(adminId: string)=>{
-    const result = await apiGateway.patch(`/blockadmin/${adminId}`);
+export const blockAdmin = async(adminId: string, throwError?: boolean)=>{
+    const result = await getGateway(throwError).patch(`/blockadmin/${adminId}`);
 
     return result as AxiosResponse<ApiResponse<unknown>, unknown>;
 }
 
-export const unBlockAdmin = async(adminId: string)=>{
-    const result = await apiGateway.patch(`/unblockadmin/${adminId}`);
+export const unBlockAdmin = async(adminId: string, throwError?: boolean)=>{
+    const result = await getGateway(throwError).patch(`/unblockadmin/${adminId}`);
 
     return result as AxiosResponse<ApiResponse<unknown>, unknown>;
 }
 
-export const deleteAdmin = async(adminId: string)=>{
-    const result = await apiGateway.patch(`/deleteadmin/${adminId}`);
+export const deleteAdmin = async(adminId: string, throwError?: boolean)=>{
+    const result = await getGateway(throwError).patch(`/deleteadmin/${adminId}`);
 
     return result as AxiosResponse<ApiResponse<unknown>, unknown>;
 }

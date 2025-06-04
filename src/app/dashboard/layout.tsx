@@ -28,6 +28,15 @@ export default function DashboardLayout({children}:{children?: ReactNode}) {
 
         </div>
     }
+
+    if(admin.blocked){
+      <div className='w-full h-full flex flex-col items-center justify-center text-center gap-2'>
+            <Lottie animationData={errorAnim} className='w-[200px] aspect-square object-cover' />
+            <h2 className='text-[25px] font-bold font-lato'>You have been blocked !!</h2>
+            <p className='text-secondary font-quicksand -mt-1 text-sm'>{"Your account has been disabled and temporarily been banned"}</p>
+        </div>
+    }
+
   return (
     <div className='w-screen h-screen flex bg-tertiary'>
 

@@ -4,20 +4,22 @@ import Routes from '@/app/routes';
 import PopupModal from '@/components/modal/PopupModal';
 import { getOneAdminOrThrow } from '@/services/rest-api/admin-api';
 import { logoutAdmin } from "@/services/rest-api/auth-api";
-import Admin from "@/utils/interfaces/admin"
-import CustomerCareSession from '@/utils/interfaces/customer-care-session';
+import Admin, { AdminActivity } from "@/utils/interfaces/admin"
 import { Group } from '@/utils/interfaces/group';
 import Notification from '@/utils/interfaces/Notification';
 import { getAdminDetails, saveAdminDetails } from "@/utils/storage/admin-storage";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react"
+import { convertApiMethod } from './UserProvider';
+import { Session } from '@/utils/interfaces/session';
 
 type AdminAPI = {
     admin?: Admin,
     notifications: Notification[],
     groups: Group[],
-    customerCareSessions: CustomerCareSession[],
+    activity: AdminActivity[],
+    customerCareSessions: Session[],
     refetch: ()=>Promise<void>,
     setAdmin: (admin: Admin) => void,
     logout: ()=> Promise<void>,
@@ -34,12 +36,25 @@ export const useAdmin = ()=>{
     return context;
 }
 
+export const useOtherAdmin = (adminId: string)=>{
+    const query = useQuery({
+        queryKey: ['admins', adminId],
+        queryFn:()=> convertApiMethod(getOneAdminOrThrow(adminId)),
+        throwOnError: true,
+        notifyOnChangeProps: ['dataUpdatedAt', 'data'],
+        refetchInterval: 3 * 1000
+    });
+
+    return query.data;
+}
+
 export default function AdminProvider({children}: {children?: ReactNode}) {
     const [admin, setAdminRaw] = useState<Admin | undefined>(getAdminDetails());
     const [notifications, setNotificationsRaw] = useState<Notification[]>([])
     const [show, showLogoutModel] = useState(false);
     const [groups, setGroupsRaw] = useState<Group[]>([])
-    const [customerCareSessions, setSessionsRaw] = useState<CustomerCareSession[]>([])
+    const [customerCareSessions, setSessionsRaw] = useState<Session[]>([])
+    const [activity, setActivityRaw] = useState<AdminActivity[]>([])
     const router = useRouter();
     const client = useQueryClient();
 
@@ -66,7 +81,7 @@ export default function AdminProvider({children}: {children?: ReactNode}) {
             transactions: adminData?.transactions.map(t => t._id) ?? [],
             sessions: adminData?.sessions?.map(s => s._id ) ?? [],
             groups: adminData?.groups.map(g => g._id) ?? [],
-            activity: [],
+            activity: adminData?.activity.map(g => g._id) ?? [],
             notifications: adminData?.notifications.map(n => n._id) ?? []
         };
         const adminChanged = JSON.stringify(compactAdmin) !== JSON.stringify(admin)
@@ -87,8 +102,11 @@ export default function AdminProvider({children}: {children?: ReactNode}) {
     const setNotifications = useCallback((notifs: Notification[])=>{
         setNotificationsRaw(notifs);
     }, []);
-    const setSessions = useCallback((sessions: CustomerCareSession[])=>{
+    const setSessions = useCallback((sessions: Session[])=>{
         setSessionsRaw(sessions);
+    }, []);
+     const setActivity = useCallback((activity: AdminActivity[])=>{
+        setActivityRaw(activity);
     }, []);
     const refetch = useCallback(()=>client.refetchQueries({queryKey: ['admin']}),[client]);
 
@@ -117,17 +135,18 @@ export default function AdminProvider({children}: {children?: ReactNode}) {
             transactions: adminData.transactions.map(t => t._id),
             sessions: adminData.sessions?.map(s => s._id ) ?? [],
             groups: adminData.groups.map(g => g._id),
-            activity: [],
+            activity: adminData?.activity.map(g => g._id) ?? [],
             notifications: adminData.notifications.map(n => n._id)
         })
         setGroups(adminData.groups)
         setSessions(adminData.sessions);
         setNotifications(adminData.notifications)
-    }, [adminData, admin, setAdmin, setGroups, setSessions, setNotifications, adminDataChanged])
+        setActivity(adminData.activity)
+    }, [adminData, admin, setAdmin, setGroups, setSessions, setActivity, setNotifications, adminDataChanged])
 
 
   return (
-    <AdminContext.Provider value={{admin, setAdmin, logout, customerCareSessions, groups, notifications, refetch}}>
+    <AdminContext.Provider value={{admin, activity, setAdmin, logout, customerCareSessions, groups, notifications, refetch}}>
         <>
          {children}
          {show && <PopupModal

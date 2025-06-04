@@ -39,6 +39,10 @@ export async function getEscrowChargeOrThrow(){
     const result =  await errorApiGateway.get(`/getcharges`);
     return result as AxiosResponse<ApiResponse<EscrowCharge[]>, unknown>;
 }
+export async function updateEscrowCharge({ category, percentage}: Record<string, unknown>, throwError?: boolean){
+    const result =  await getGateway(throwError).post(`/updateescrowcharge`, {category, percentage});
+    return result as AxiosResponse<ApiResponse<unknown>, unknown>;
+}
 
 
 // Driver Endpoints
