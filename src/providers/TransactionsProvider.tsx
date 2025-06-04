@@ -59,19 +59,19 @@ export default function TransactionsProvider({children}:{children?: ReactNode}){
         const result = await getOneAdminOrThrow(admin!._id);
         const adminData = result.data.data;
         
-        return adminData.transactions;
+        return adminData.transactions.toReversed();
     }, [admin, transactions])
 
      const fetchReportedTransactions = useCallback(async()=>{
         const result = await getReportedTransactions();
 
-        return result.data.data;
+        return result.data.data.toReversed();
     }, [])
 
     const fetchAllTransactions = useCallback(async()=>{
         const result = await getAllTransactions();
 
-        return result.data.data;
+        return result.data.data.toReversed();
     },[])
 
     const queries = useQueries({
