@@ -1,9 +1,9 @@
 'use client';
 
-import { getAllUsers, getOneUser, getReportedUsers, getUserReferralHistory, getWalletHistory } from "@/services/rest-api/user-api";
+import { getAllUsers, getOneUser, getUserReferralHistory, getWalletHistory } from "@/services/rest-api/user-api";
 import { ApiResponse } from "@/utils/interfaces/api-resonse";
 import { user } from "@/utils/interfaces/user";
-import { useQueries, useQueryClient } from "@tanstack/react-query";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
 
@@ -85,46 +85,33 @@ export default function UsersProvider({children}:{children?: ReactNode}){
         return res.data.data.toReversed();
     },[])
 
-    const fetchReportedUsers = useCallback(async()=>{
-        const res = await getReportedUsers(true)
+    // const fetchReportedUsers = useCallback(async()=>{
+    //     const res = await getReportedUsers(true)
 
-        return res.data.reportedUsers.toReversed() ?? [];
-    },[])
+    //     return res.data.reportedUsers.toReversed() ?? [];
+    // },[])
 
-    const queries = useQueries({
-        queries:[
-            {
-                queryKey:['users'],
+    const usersQuery = useQuery({
+         queryKey:['users'],
                 queryFn:fetchAllUsers,
                 notifyOnChangeProps: ['data', 'dataUpdatedAt'],
                 refetchInterval: 3.1 * 1000
-            },
-            {
-                queryKey:['reportedUsers'],
-                queryFn:fetchReportedUsers,
-                notifyOnChangeProps: ['data', 'dataUpdatedAt'],
-                refetchInterval: 3.1 * 1000
-            },
-
-        ]
     });
 
-    const [usersQuery, reportedUsersQuery] = queries;
-
     const dataChanged = useCallback(()=>{
-        return JSON.stringify(users) !== JSON.stringify(usersQuery.data) || JSON.stringify(reportedUsers) !== JSON.stringify(reportedUsersQuery.data);
-    }, [reportedUsers, usersQuery.data, reportedUsersQuery.data, users])
+        return JSON.stringify(users) !== JSON.stringify(usersQuery.data);
+    }, [usersQuery.data, users])
 
-    const setUsers = useCallback((_users : [user[], user[] ])=>{
-        setUsersRaw((prev) => _users[0] ?? prev);
-        setReportedUsersRaw((prev) => _users[1] ?? prev);
+    const setUsers = useCallback((_users : user[])=>{
+        setUsersRaw((prev) => _users ?? prev);
+        setReportedUsersRaw((prev) => (_users ?? prev).filter(u => u.reports.count !== 0));
     },[])
 
     useEffect(()=>{
         if(!dataChanged()) return;
 
-        setUsers([usersQuery.data!, reportedUsersQuery.data!])
-    },[dataChanged, reportedUsersQuery.data, setUsers, usersQuery.data])
+        setUsers(usersQuery.data!)
+    },[dataChanged, setUsers, usersQuery.data])
 
     
 
