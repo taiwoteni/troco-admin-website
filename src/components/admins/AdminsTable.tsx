@@ -8,6 +8,7 @@ import Routes from '@/app/routes';
 import { FaUser } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { distinctStringList } from '@/utils/ArrayUtil';
+import { Colors } from '@/utils/Colors';
 
 export default function AdminsTable({search}:{search:string}) {
     const menus : (AdminRole | 'All')[] = ['All', 'Admin', 'Super Admin', 'Secretary', 'Customer Care'];
@@ -75,8 +76,9 @@ export default function AdminsTable({search}:{search:string}) {
                     <td className="py-3 pl-3  overflow-hidden">
                     <div className="flex gap-2 items-center">
                         
-                        <div className="rounded-full w-[36px] h-[36px] overflow-hidden bg-gray-200 flex items-end justify-center">
+                        <div className="rounded-full relative w-[36px] h-[36px] bg-gray-200 flex items-end justify-center">
                             <FaUser className="text-gray-400 text-[32px]" />
+                            <div style={{backgroundColor:admin.active? Colors.themeColor:'red'}} className="absolute bottom-0 right-0 border-white border-[2px] rounded-full p-1 w-[40%] h-[40%]"/>
                         </div>
                         <p>{admin.username}</p>
                     </div>

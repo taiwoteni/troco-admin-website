@@ -69,12 +69,12 @@ export default function ReportsPage() {
                   const user = (d as user);
                   const report = user.reports.details?.findLast(()=> true);
                   const reason = report?.reason.includes(':')? report.reason.substring(0, report.reason.indexOf(':')): "Other";
-                  // const description = report?.reason.includes(':')? report.reason.substring(reason.length+1): "(No Description)"
+                  const description = report?.reason.includes(':')? report.reason.substring(reason.length+1): "(No Description)"
 
                   return <tr onClick={()=>{
                                     setModal({
                                         title:`Report Details`,
-                                        question: <span>Reason: <span className="font-bold">{reason}</span><br/><br />Description: <span className="font-bold">{description}</span></span>,
+                                        question: <span>Reason: <span className="font-bold">{reason}</span><br/><br/> Description: <span className="font-bold">{description}</span></span>,
                                         onCancel:()=>setModal(null),
                                         onOk:()=>router.push(Routes.dashboard.users.path + "/" + user._id),
                                         okText:'View User',

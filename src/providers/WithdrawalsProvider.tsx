@@ -39,6 +39,7 @@ export default function WithdrawalsProvider({children}:{children?: ReactNode}){
     const withdrawalsQuery = useQuery({
                 queryKey:['withdrawals'],
                 queryFn:()=>convertApiMethod(getAllWithdrawals()),
+                select: (data) =>data.toReversed(),
                 notifyOnChangeProps: ['data', 'dataUpdatedAt'],
                 refetchInterval: 3.1 * 1000
             },);
