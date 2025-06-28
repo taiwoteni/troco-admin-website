@@ -4,7 +4,6 @@ import { useAdmin } from '@/providers/AdminProvider';
 import { useTransactions } from '@/providers/TransactionsProvider'
 import { Transaction_Status, TransactionCategory } from '@/utils/interfaces/transaction';
 import React, { useMemo, useState } from 'react'
-import AestheticTabbar from '../switch/AestheticTabbar';
 import { useRouter } from 'next/navigation';
 import Routes from '@/app/routes';
 import Image from 'next/image';
@@ -12,6 +11,7 @@ import { FaUser } from 'react-icons/fa6';
 import formatDate from '@/utils/DateFormat';
 import { formatCurrency } from '@/utils/Format';
 import { Colors } from '@/utils/Colors';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 export function getStatusColor(status:string):string{
   switch(status.trim().toLowerCase()){
@@ -41,12 +41,17 @@ interface props{
 export default function TransactionTable({search=''}:props) {
     const {admin} = useAdmin();
     const [filter] = useState<TransactionCategory | Transaction_Status | 'all'>('all')
-    const [tabIndex, selectIndex] = useState<number>(0);
     const {allTransactions, transactions} = useTransactions();
     const router = useRouter();
+    const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-    const filteredTransactions = useMemo(()=>(admin?.role !== 'Admin'? allTransactions : transactions).filter(t =>  (filter === 'all' || [t.typeOftransaction, t.status].includes(filter)) && t.transactionName.toLowerCase().includes(search.trim().toLowerCase())),[admin?.role, allTransactions, transactions, filter, search])
+    const filteredTransactions = useMemo(()=>(admin?.role !== 'Admin'? allTransactions : transactions).filter(t =>  (search.trim().length === 0 || [t.typeOftransaction, t.status, t.transactionName].some((value)=> value.trim().toLowerCase().includes(search.toLowerCase())))),[admin?.role, allTransactions, transactions, search])
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
     
   return (
     <div className='rounded-lg shadow-lg w-full h-fit min-h-[400px] px-5 pb-5 bg-white mb-8'>
@@ -59,9 +64,6 @@ export default function TransactionTable({search=''}:props) {
                 {!['all', 'product', 'service', 'virtual'].includes(filter) && `${filter} Transactions`}
             </h1>
 
-            <div className='w-[300px]'>
-                <AestheticTabbar className='h-[40px]' tabs={['All', 'Category', 'Status']} onSelectTab={selectIndex} index={tabIndex} />
-            </div>
         </div>
 
         <div className="w-full h-fit rounded-lg border border-separate border-spacing-0 overflow-hidden">
@@ -97,7 +99,7 @@ export default function TransactionTable({search=''}:props) {
                   )
                 }
                 {filteredTransactions.length !== 0 && (
-                  filteredTransactions.map((transaction, index) => {
+                  filteredTransactions.slice(indexOfFirstItem, indexOfLastItem).map((transaction, index) => {
                     // const userData = new User(transaction)
                     return <tr
                     key={index}
@@ -125,7 +127,7 @@ export default function TransactionTable({search=''}:props) {
                       </div>
                     </td>
                     <td className="py-3 text-center overflow-hidden text-ellipsis whitespace-nowrap">{transaction.transactionName}</td>
-                    <td className="py-3 text-center">{transaction.typeOftransaction}</td>
+                    <td className="py-3 text-center">{transaction.typeOftransaction.charAt(0).toUpperCase() + transaction.typeOftransaction.substring(1).toLowerCase()}</td>
                     <td className="py-3 text-center">
                       {formatDate(transaction.createdTime,false)}
                     </td>
@@ -139,6 +141,18 @@ export default function TransactionTable({search=''}:props) {
               </tbody>
             </table>
         </div>
+        {/* Pagination Tabs Section */}
+        {filteredTransactions.length !== 0 && <div className='w-full flex flex-center mt-4 gap-4 py-2 relative'>
+          <button disabled={currentPage==1} onClick={()=> setCurrentPage(prev => Math.max(prev - 1, 1))} className='flex flex-center select-none outline-none w-9 h-[32px] text-black border-[1.5px] rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+            <IoIosArrowBack size={16} />
+          </button>
+
+          <p className='text-secondary select-none text-sm'>Showing <span className='text-black font-semibold'>{currentPage}</span> out of <span className='text-black font-semibold'>{totalPages}</span></p>
+
+          <button disabled={currentPage == totalPages} onClick={()=>setCurrentPage(prev => Math.min(prev + 1, totalPages))} className='flex select-none flex-center outline-none w-9 h-[32px] border-[1.5px] text-black rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+            <IoIosArrowForward size={16} />
+          </button>
+        </div>}
     </div>
   )
 }

@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useMemo, useState } from 'react'
 import { FaUser } from 'react-icons/fa';
-import AestheticTabbar from '../switch/AestheticTabbar';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 interface props{
   search?: string
@@ -16,10 +16,17 @@ interface props{
 export default function KycTable({search= ''}:props) {
     const {users} = useUsers();
     const [filter] = useState<AccountType | 'all'>('all')
-    const [tabIndex, selectIndex] = useState<number>(0);
     const router = useRouter();
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
-    const filteredUsers = useMemo(()=>users.filter(u => (filter === 'all' || u.accountType === filter) && u.kycTier !== u.kyccurrentTier && (u.firstName + " " + u.lastName).toLowerCase().trim().includes(search.trim().toLowerCase()) ),[users, search, filter])
+    const filteredUsers = useMemo(()=>users.filter(u => u.kycTier !== u.kyccurrentTier).filter(u => (search.trim().length ==0 || [u.firstName + " " + u.lastName, u.accountType ?? "personal", u.kycTier, u.kyccurrentTier].some((value)=> value.toString().trim().toLowerCase().includes(search.trim().toLowerCase())))),[users, search])
+
+    // Calculate indices
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   return (
     <div className='rounded-lg shadow-lg w-full h-fit min-h-[400px] px-5 pb-5 bg-white mb-8'>
         <div className='flex items-center justify-between py-4 my-5'>
@@ -30,10 +37,6 @@ export default function KycTable({search= ''}:props) {
                 {filter === "merchant" && "Merchant KYC"}
                 {filter === "personal" && "Personal KYC"}
             </h1>
-
-            <div className='w-[300px]'>
-                <AestheticTabbar className='h-[40px]' tabs={['All', 'Category', 'Tier']} onSelectTab={selectIndex} index={tabIndex} />
-            </div>
         </div>
 
         <div className="w-full h-fit rounded-lg border border-separate border-spacing-0 overflow-hidden">
@@ -66,7 +69,7 @@ export default function KycTable({search= ''}:props) {
                   )
                 }
                 {filteredUsers.length !== 0 && (
-                  filteredUsers.map((user, index) => {
+                  filteredUsers.slice(indexOfFirstItem, indexOfLastItem).map((user, index) => {
                     const userData = new User(user)
                     return <tr
                     key={index}
@@ -109,6 +112,18 @@ export default function KycTable({search= ''}:props) {
               </tbody>
             </table>
         </div>
+        {/* Pagination Tabs Section */}
+        {filteredUsers.length !== 0 && <div className='w-full flex flex-center mt-4 gap-4 py-2 relative'>
+          <button disabled={currentPage==1} onClick={()=> setCurrentPage(prev => Math.max(prev - 1, 1))} className='flex flex-center select-none outline-none w-9 h-[32px] text-black border-[1.5px] rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+            <IoIosArrowBack size={16} />
+          </button>
+
+          <p className='text-secondary select-none text-sm'>Showing <span className='text-black font-semibold'>{currentPage}</span> out of <span className='text-black font-semibold'>{totalPages}</span></p>
+
+          <button disabled={currentPage == totalPages} onClick={()=>setCurrentPage(prev => Math.min(prev + 1, totalPages))} className='flex select-none flex-center outline-none w-9 h-[32px] border-[1.5px] text-black rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+            <IoIosArrowForward size={16} />
+          </button>
+        </div>}
     </div>
   )
 }

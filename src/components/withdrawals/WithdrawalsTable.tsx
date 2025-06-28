@@ -5,16 +5,23 @@ import formatDate from '@/utils/DateFormat';
 import { formatCurrency } from '@/utils/Format';
 import { Withdrawal } from '@/utils/interfaces/withdrawal';
 import Image from 'next/image';
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { getStatusColor } from '../transactions/TransactionItemLayout';
 import { useRouter } from 'next/navigation';
 import Routes from '@/app/routes';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 export default function WithdrawalsTable({search}:Record<string,string>) {
   const {withdrawals} = useWithdrawals();
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+        const itemsPerPage = 10;
   const filteredWithdrawals = useMemo(()=>withdrawals.filter(b => (b.user.firstName + ' ' + b.user.lastName).toLowerCase().includes(search.trim().toLowerCase()) || b.accountToBeSentTo.accountName.toLowerCase().includes(search.trim().toLowerCase()) || b.accountToBeSentTo.accountNumber.toLowerCase().includes(search.trim().toLowerCase()) || b.accountToBeSentTo.bankName.toLowerCase().includes(search.trim().toLowerCase())).map(w => new Withdrawal(w)),[withdrawals, search])
   
+  const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    const totalPages = Math.ceil(filteredWithdrawals.length / itemsPerPage);
 
   
   return (
@@ -45,7 +52,7 @@ export default function WithdrawalsTable({search}:Record<string,string>) {
             </tr>
           </thead>
           <tbody>
-            {filteredWithdrawals.map(withdrawal => (
+            {filteredWithdrawals.slice(indexOfFirstItem, indexOfLastItem).map(withdrawal => (
                 <tr  key={withdrawal.id} onClick={()=>router.push(Routes.dashboard.withdrawal.path + "/" + withdrawal.id)} className='hover:bg-tertiary cursor-pointer border-b last:border-b-0 transition-[background-color] ease-in duration-[0.4s]'>
                   <td className="py-3 pl-3 text-start flex gap-3 overflow-hidden">
                     <div className="flex gap-2 w-fit items-center">
@@ -80,6 +87,18 @@ export default function WithdrawalsTable({search}:Record<string,string>) {
           </tbody>
         </table>
       </div>
+      {/* Pagination Tabs Section */}
+              {filteredWithdrawals.length !== 0 && <div className='w-full flex flex-center mt-4 gap-4 py-2 relative'>
+                <button disabled={currentPage==1} onClick={()=> setCurrentPage(prev => Math.max(prev - 1, 1))} className='flex flex-center select-none outline-none w-9 h-[32px] text-black border-[1.5px] rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+                  <IoIosArrowBack size={16} />
+                </button>
+      
+                <p className='text-secondary select-none text-sm'>Showing <span className='text-black font-semibold'>{currentPage}</span> out of <span className='text-black font-semibold'>{totalPages}</span></p>
+      
+                <button disabled={currentPage == totalPages} onClick={()=>setCurrentPage(prev => Math.min(prev + 1, totalPages))} className='flex select-none flex-center outline-none w-9 h-[32px] border-[1.5px] text-black rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+                  <IoIosArrowForward size={16} />
+                </button>
+              </div>}
       
 
 
