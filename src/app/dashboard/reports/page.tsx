@@ -12,6 +12,7 @@ import { user } from "@/utils/interfaces/user";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 
 export default function ReportsPage() {
@@ -19,6 +20,8 @@ export default function ReportsPage() {
   const {reportedTransactions} = useTransactions();
   const {reportedUsers} = useUsers();
   const [modal, setModal] = useState<modalProps | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const router = useRouter();
 
@@ -26,6 +29,11 @@ export default function ReportsPage() {
 
   const data = useMemo(()=>(type==0?reportedUsers : reportedTransactions).filter(d => (type == 0? ((d as user).firstName + " " + (d as user).lastName): (d as reportDetail).transaction?.transactionName ?? '').toLowerCase().includes(search.trim().toLowerCase())), [type, reportedTransactions, reportedUsers, search])
   
+  // Calculate indices
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
   
 
   return (
@@ -64,7 +72,7 @@ export default function ReportsPage() {
               </thead>
 
               <tbody>
-                {data.map(d =>{
+                {data.slice(indexOfFirstItem, indexOfLastItem).map(d =>{
                 if(type === 0){
                   const user = (d as user);
                   const report = user.reports.details?.findLast(()=> true);
@@ -170,6 +178,19 @@ export default function ReportsPage() {
             </table>
 
           </div>
+
+          {/* Pagination Tabs Section */}
+          {data.length !== 0 && <div className='w-full flex flex-center mt-4 gap-4 py-2 relative'>
+            <button disabled={currentPage==1} onClick={()=> setCurrentPage(prev => Math.max(prev - 1, 1))} className='flex flex-center select-none outline-none w-9 h-[32px] text-black border-[1.5px] rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+              <IoIosArrowBack size={16} />
+            </button>
+  
+            <p className='text-secondary select-none text-sm'>Showing <span className='text-black font-semibold'>{currentPage}</span> out of <span className='text-black font-semibold'>{totalPages}</span></p>
+  
+            <button disabled={currentPage == totalPages} onClick={()=>setCurrentPage(prev => Math.min(prev + 1, totalPages))} className='flex select-none flex-center outline-none w-9 h-[32px] border-[1.5px] text-black rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+              <IoIosArrowForward size={16} />
+            </button>
+          </div>}
 
 
 

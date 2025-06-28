@@ -9,13 +9,23 @@ import { FaUser } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { distinctStringList } from '@/utils/ArrayUtil';
 import { Colors } from '@/utils/Colors';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 export default function AdminsTable({search}:{search:string}) {
     const menus : (AdminRole | 'All')[] = ['All', 'Admin', 'Super Admin', 'Secretary', 'Customer Care'];
     const [filter, setFilter] = useState<AdminRole | 'All'>('All')
     const router = useRouter()
     const admins = useAdmins();
-    const filteredAdmins = useMemo(()=> admins.filter(admin =>admin.username.toLowerCase().includes(search.toLowerCase().trim()) && (filter == 'All' || admin.role === filter)),[filter, search, admins]) 
+    const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+    const filteredAdmins = useMemo(()=> admins.filter(admin =>(admin.username.toLowerCase().includes(search.toLowerCase().trim()) || search.trim().length ===0) && (filter == 'All' || admin.role === filter)),[filter, search, admins])
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    const totalPages = Math.ceil(filteredAdmins.length / itemsPerPage);
+
+
   return (
     <div className='rounded-lg shadow-lg w-full h-fit min-h-[400px] px-5 pb-5 bg-white mb-8'>
       <div className='flex items-center justify-between py-4 my-5'>
@@ -65,7 +75,7 @@ export default function AdminsTable({search}:{search:string}) {
                 )
                 }
                 {filteredAdmins.length !== 0 && (
-                filteredAdmins.map((admin, index) => {
+                filteredAdmins.slice(indexOfFirstItem, indexOfLastItem).map((admin, index) => {
                     return <tr
                     key={index}
                     onClick={() => {
@@ -98,6 +108,20 @@ export default function AdminsTable({search}:{search:string}) {
             </tbody>
         </table>
       </div>
+      {/* Pagination Tabs Section */}
+              {filteredAdmins.length !== 0 && <div className='w-full flex flex-center mt-4 gap-4 py-2 relative'>
+                <button disabled={currentPage==1} onClick={()=> setCurrentPage(prev => Math.max(prev - 1, 1))} className='flex flex-center select-none outline-none w-9 h-[32px] text-black border-[1.5px] rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+                  <IoIosArrowBack size={16} />
+                </button>
+      
+                <p className='text-secondary select-none text-sm'>Showing <span className='text-black font-semibold'>{currentPage}</span> out of <span className='text-black font-semibold'>{totalPages}</span></p>
+      
+                <button disabled={currentPage == totalPages} onClick={()=>setCurrentPage(prev => Math.min(prev + 1, totalPages))} className='flex select-none flex-center outline-none w-9 h-[32px] border-[1.5px] text-black rounded-[7px] hover:bg-themeColor hover:border-0 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-[1.5px]'>
+                  <IoIosArrowForward size={16} />
+                </button>
+              </div>}
+
+      
 
 
     </div>
