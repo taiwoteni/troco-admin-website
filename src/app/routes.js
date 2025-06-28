@@ -1,0 +1,55 @@
+const Routes = {
+auth:{
+    path:"/auth/",
+    login:{
+        path:"/auth/login"
+    },
+    signup:{
+        path:"/auth/signup"
+    }
+},
+dashboard:{
+    path:"/dashboard",
+    users:{
+        path:"/dashboard/users"
+    },
+    transactions:{
+        path:"/dashboard/transactions"
+    },
+    orders:{
+        path:"/dashboard/orders"
+    },
+    sessions:{
+        path:"/dashboard/sessions"
+    },
+    allAdmin:{
+        path:"/dashboard/admins"
+    },
+    charges:{
+        path:"/dashboard/charges"
+    },
+    allCustomerCare:{
+        path:"/dashboard/customer-cares"
+    },
+    withdrawal:{
+        path:"/dashboard/withdrawals"
+    },
+    bonuses:{
+        path:"/dashboard/bonuses"
+    },
+    kyc:{
+        path:"/dashboard/kyc"
+    },
+    reports:{
+        path:"/dashboard/reports"
+    },
+    notifications:{
+        path:"/dashboard/notifications"
+    },
+    profile:{
+        path:"/dashboard/profile"
+    }
+}
+}
+
+export default Routes;
