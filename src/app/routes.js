@@ -8,7 +8,7 @@ auth:{
         path:"/auth/signup"
     },
     twoFactorAuth:{
-        path:"/two-factor-authentication"
+        path:"/auth/two-factor-authentication"
     }
 },
 dashboard:{

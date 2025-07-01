@@ -8,6 +8,6 @@ export async function setPin(pin : string,throwError?: boolean){
 }
 
 export async function validatePin(enteredPin : string,throwError?: boolean){
-    const result =  await getGateway(throwError).post(`/validate_admin_pin`, {pin: enteredPin});
+    const result =  await getGateway(throwError).post(`/validate_admin_pin`, {enteredPin});
     return result as AxiosResponse<ApiResponse<unknown>, unknown>;
 }
