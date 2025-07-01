@@ -6,6 +6,9 @@ auth:{
     },
     signup:{
         path:"/auth/signup"
+    },
+    twoFactorAuth:{
+        path:"/auth/two-factor-authentication"
     }
 },
 dashboard:{

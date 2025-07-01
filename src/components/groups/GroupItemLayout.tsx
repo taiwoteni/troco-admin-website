@@ -69,7 +69,7 @@ interface props {
 
 export default function GroupItemLayout({ group, hasUnreadMessages = false }: props) {
   return (
-    <div className="flex items-center mb-2 justify-between gap-5 py-2 px-4 cursor-pointer">
+    <div className="flex items-center mb-2 justify-between gap-5 py-2 px-4 cursor-pointer overflow-x-hidden">
       <div className="flex flex-1 gap-3">
         <div
           className="w-[47px] h-[47px] rounded-[50%] mr-[20px] flex items-center justify-center"
@@ -81,22 +81,25 @@ export default function GroupItemLayout({ group, hasUnreadMessages = false }: pr
             height={24}
           />
         </div>
-        <div className="flex flex-col justify-center gap-[2px]">
+        <div className="flex flex-col justify-center gap-[2px] overflow-hidden">
           <p className="font-semibold" style={{ fontSize: "14.25px" }}>
             {group.name}
           </p>
-          <div className="font-quicksand" style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <div className="w-full truncate overflow-hidden">
+            <p className="font-quicksand w-full truncate">
             {senderText(group).trim().length !== 0 && (
-              <p
-                className="text-gray-500"
+              <span
+                className="text-gray-500 mr-[5px]"
                 style={{ fontSize: "12px", fontWeight: "bold" }}
               >
                 {senderText(group).trim()}
-              </p>
+              </span>
             )}
-            <p className="text-gray-500 flex flex-1 truncate w-[250px] " style={{ fontSize: "12px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <span className="text-gray-500 text-[12px]">
               {messageText(group)}
-            </p>
+            </span>
+          </p>
+
           </div>
         </div>
     

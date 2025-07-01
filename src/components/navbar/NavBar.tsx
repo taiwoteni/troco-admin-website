@@ -13,6 +13,9 @@ import BroadcaseMessage from "./BroadcaseMessage";
 import FeeCalculator from "./FeeCalculator";
 import NotificationsLayout from "./NotificationsLayout";
 import { useAdmin } from "@/providers/AdminProvider";
+import SetAdminPin from "./SetAdminPin";
+import { Lock } from "iconsax-react";
+import { Colors } from "@/utils/Colors";
 
 
 
@@ -23,6 +26,8 @@ const Navbar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [showTrackUI, setShowTrackUI] = useState(false);
+  const [showChangeAuthPin, setShowChangeAuthPin] = useState(false);
+
   const [showFeeCalculator, setShowFeeCalculator] = useState(false);
   const [showBroadcastUI, setShowBroadcastUI] = useState(false);
 
@@ -68,6 +73,13 @@ const Navbar = () => {
               <TrackTransaction onCancel={()=>setShowTrackUI(false)}/>
             )}
           </div>
+
+          {adminOnline.role === 'Super Admin' && <div className="flex items-center justify-center rounded-[50%] w-[41px] h-[41px] bg-tertiary">
+            <Lock onClick={()=>setShowChangeAuthPin(true)} className="cursor-pointer text-[25px] text-themeColor" size={25} variant="Bold" color={Colors.secondary}/>
+
+             {showChangeAuthPin && <SetAdminPin onCancel={()=> setShowChangeAuthPin(false)} />} 
+          </div>}
+
           <div className="relative rounded-[50%] p-2 bg-tertiary">
             <IoNotifications onClick={toggleNotifications} title="Notifications" className="cursor-pointer text-[25px] text-secondary" />
             {unreadNotificationCount > 0 && (
