@@ -98,10 +98,10 @@ export default function ViewWithdrawalPage() {
                                         <p>{user.referralCode}</p>
                                     </div>
 
-                                    <div onClick={()=>router.push(Routes.dashboard.users.path + "/" + withdrawal.user._id)} className="w-fit flex justify-center items-center gap-2 cursor-pointer px-3 py-1 text-white bg-white bg-opacity-20 rounded-[25px]">
+                                    {!['Customer Care', 'Admin'].includes(admin?.role ?? '') && <div onClick={()=>router.push(Routes.dashboard.users.path + "/" + withdrawal.user._id)} className="w-fit flex justify-center items-center gap-2 cursor-pointer px-3 py-1 text-white bg-white bg-opacity-20 rounded-[25px]">
                                         <GrMoney className="w-[20px] h-[20px] text-white" />
                                         <p>Send Bonus</p>
-                                    </div>
+                                    </div>}
                                 </div>
                             </div>
                         </div>

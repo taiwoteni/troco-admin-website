@@ -262,7 +262,7 @@ export default function ViewUserPage() {
                         onClick={() => setIsModalOpen(true)}
                         disabled={blockUserMutation.isPending}>{blockUserMutation.isPending?'Hold On..':user.isBlocked?'Unblock':'Block'}</button>
                     
-                    <button className={`rounded-[30px] w-[115px] py-[10px] font-semibold cursor-pointer ${!user.isBlocked? 'border-red-500 text-red-500 border-[2px]':'bg-red-500 text-white'}`}
+                    {!['Customer Care', 'Admin'].includes(admin?.role ?? '') && <button className={`rounded-[30px] w-[115px] py-[10px] font-semibold cursor-pointer ${!user.isBlocked? 'border-red-500 text-red-500 border-[2px]':'bg-red-500 text-white'}`}
                         onClick={() =>{
                           setModal({
                             title:"Delete User",
@@ -278,7 +278,7 @@ export default function ViewUserPage() {
                             okText:'Yes, Delete'
                           })
                         }}
-                        disabled={deleteUserMutation.isPending}>{deleteUserMutation.isPending?'Deleting..':'Delete'}</button>
+                        disabled={deleteUserMutation.isPending}>{deleteUserMutation.isPending?'Deleting..':'Delete'}</button>}
                   </div>
                 </div>
               </div>
@@ -396,10 +396,10 @@ export default function ViewUserPage() {
                             <p>{user.referralCode}</p>
                         </div>
 
-                        <div onClick={()=> setBonusModal(true)} className="w-fit flex justify-center items-center gap-2 cursor-pointer px-3 py-1 text-white bg-white bg-opacity-20 rounded-[25px]">
+                        { !['Customer Care', 'Admin'].includes(admin?.role ?? '') && <div onClick={()=> setBonusModal(true)} className="w-fit flex justify-center items-center gap-2 cursor-pointer px-3 py-1 text-white bg-white bg-opacity-20 rounded-[25px]">
                             <Coin color='#fff' className="w-[20px] h-[20px] text-white" />
                             <p>Send Bonus</p>
-                        </div>
+                        </div>}
                     </div>
                     </div>
                 </div>
