@@ -33,16 +33,6 @@ export const SideBarArray : SideBarData[] = [
     title: "Users",
   },
   {
-    icon: <RiVerifiedBadgeFill className="w-[25px] h-[25px]"/>,
-    path: routes.dashboard.kyc.path,
-    title: "Kyc",
-  },
-  {
-    icon: <PiWarningCircleFill className="w-[25px] h-[25px]"/>,
-    path: routes.dashboard.reports.path,
-    title: "Reports",
-  },
-  {
     icon: <FaRepeat className=" w-[25px] h-[25px]"/>,
     path: routes.dashboard.transactions.path,
     title: "Transactions",
@@ -55,6 +45,20 @@ export const useSideBarMenu = (): SideBarData[] =>{
   const {admin, logout} = useAdmin();
 
   if(!admin) return basicData;
+
+  if(admin.role !== 'Admin'){
+      basicData.push({
+      icon: <RiVerifiedBadgeFill className="w-[25px] h-[25px]"/>,
+      path: routes.dashboard.kyc.path,
+      title: "Kyc",
+    },
+    {
+      icon: <PiWarningCircleFill className="w-[25px] h-[25px]"/>,
+      path: routes.dashboard.reports.path,
+      title: "Reports",
+    },
+    )
+  }
 
   if(admin.role === 'Secretary' || admin.role === 'Super Admin'){
     basicData.push({
