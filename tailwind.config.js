@@ -47,7 +47,22 @@ module.exports = {
           'border-radius': '10px',
         },
         '.custom-scrollbar::-webkit-scrollbar-thumb:hover': {
-          background: '#109E15',
+          background: 'transparent',
+        },
+        
+        '.no-scrollbar::-webkit-scrollbar': {
+          width: '5px',
+        },
+        '.no-scrollbar::-webkit-scrollbar-track': {
+          background: 'transparent',
+          'border-radius': '10px',
+        },
+        '.no-scrollbar::-webkit-scrollbar-thumb': {
+          background: 'transparent',
+          'border-radius': '10px',
+        },
+        '.no-scrollbar::-webkit-scrollbar-thumb:hover': {
+          background: 'transparent',
 
         },
         '.flex-center':{
