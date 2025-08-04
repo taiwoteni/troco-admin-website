@@ -49,7 +49,7 @@ export default function SignupPage() {
     })
 
   return (
-    <div className="flex flex-col gap-5 w-fit h-fit m-auto p-10 self-end">
+    <div className="flex flex-col gap-5 w-fit h-full overflow-y-scroll no-scrollbar m-auto p-10 self-end">
         <div className="m-auto">
             <h1 className="font-bold text-[35px] font-lato text-black">Register Account</h1>
             <p className="text-center font-quicksand text-secondary">Register your admin account</p>
