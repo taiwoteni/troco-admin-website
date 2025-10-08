@@ -9,6 +9,7 @@ import { getOneAdminOrThrow } from "@/services/rest-api/admin-api"
 import { getAllTransactions, getOneTransaction, getReportedTransactions } from "@/services/rest-api/transaction-api"
 import { reportDetail } from "@/utils/interfaces/report"
 import { convertApiMethod } from "./UserProvider"
+import { joinRoom} from "@/services/socket-io/Core"
 
 type TransactionsAPI = {
     transactions: transaction[],
@@ -29,6 +30,7 @@ export const useTransactions = ()=>{
 
 export const useTransaction = (id: string)=>{
     const queryClient = useQueryClient();
+    joinRoom(`transaction:${id}`);
     const transactionQuery = useQuery({
         queryKey: ['transactions', id],
         queryFn: ()=>convertApiMethod(getOneTransaction(id, )),

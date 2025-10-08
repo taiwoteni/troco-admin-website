@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "https://trocotechnologylimitedserver.space/api/v1";
+const baseUrl = "https://trocco-app-be.onrender.com/api/v1";
 const headers = {"Content-Type": 'application/json'};
 
 // To prevent axios from throwinf any errors
